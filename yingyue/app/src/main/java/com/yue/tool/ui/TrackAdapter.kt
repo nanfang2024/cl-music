@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.yue.tool.R
 import com.yue.tool.api.MusicApi
 import com.yue.tool.api.Track
 import com.yue.tool.databinding.ItemTrackBinding

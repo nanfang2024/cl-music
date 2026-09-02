@@ -68,7 +68,7 @@ object Downloader {
         fun insertUri(name: String): Uri? {
             val values = ContentValues().apply {
                 put(MediaStore.Audio.Media.DISPLAY_NAME, name)
-                put(MediaStore.Audio.MIME_TYPE, "audio/mpeg")
+                put("mime_type", "audio/mpeg") // MediaStore.MediaColumns.MIME_TYPE 的列名
                 put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/" + MUSIC_DIR)
                 put(MediaStore.Audio.Media.IS_PENDING, 1)
             }

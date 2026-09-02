@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_bg">#0B0F1A</color>
+    <color name="mintGreen">#6FD3A5</color>
+    <color name="moonGold">#E8C878</color>
+    <color name="nightBg">#0B0F1A</color>
+    <color name="outline">#2A3450</color>
+    <color name="surface">#141B2B</color>
+    <color name="surfaceVariant">#1C2537</color>
+    <color name="textPrimary">#F2F4F8</color>
+    <color name="textSecondary">#8A93A6</color>
+    <string name="app_name">映月</string>
+    <string name="app_slogan">歌如月色 · 顺手可得</string>
+    <string name="btn_search">搜索</string>
+    <string name="empty_default">搜一首歌试试</string>
+    <string name="hint_search">歌名 / 歌手 / 专辑</string>
+    <string name="label_quality">音质</string>
+    <string name="label_source">音源</string>
+    <string name="source_joox">JOOX</string>
+    <string name="source_netease">网易云</string>
+    <style name="CoverRounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+    <style name="Theme.YingYue" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/moonGold</item>
+        <item name="colorOnPrimary">#141408</item>
+        <item name="colorSecondary">@color/moonGold</item>
+        <item name="colorOnSecondary">#141408</item>
+        <item name="android:colorBackground">@color/nightBg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/textSecondary</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="android:statusBarColor">@color/nightBg</item>
+        <item name="android:navigationBarColor">@color/nightBg</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorHint">@color/textSecondary</item>
+    </style>
+</resources>

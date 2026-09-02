@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_search.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_search.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_check.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_check.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/layout_activity_main.xml.flat",
+        "source": "com.yue.tool.app-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/layout_item_track.xml.flat",
+        "source": "com.yue.tool.app-main-36:/layout/item_track.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_pause.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_download.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_download.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.yue.tool.app-main-36:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_music.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_music.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_ic_play.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/ic_play.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/drawable_bg_tag.xml.flat",
+        "source": "com.yue.tool.app-main-36:/drawable/bg_tag.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-35:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.yue.tool.app-main-36:/mipmap-anydpi-v26/ic_launcher.xml"
+    }
+]
