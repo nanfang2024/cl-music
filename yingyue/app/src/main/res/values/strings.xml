@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">映月</string>
+    <string name="app_slogan">歌如月色 · 顺手可得</string>
+    <string name="hint_search">歌名 / 歌手 / 专辑</string>
+    <string name="btn_search">搜索</string>
+    <string name="label_source">音源</string>
+    <string name="label_quality">音质</string>
+    <string name="source_netease">网易云</string>
+    <string name="source_joox">JOOX</string>
+    <string name="empty_default">搜一首歌试试</string>
+</resources>

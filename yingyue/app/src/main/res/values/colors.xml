@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nightBg">#0B0F1A</color>
+    <color name="surface">#141B2B</color>
+    <color name="surfaceVariant">#1C2537</color>
+    <color name="moonGold">#E8C878</color>
+    <color name="mintGreen">#6FD3A5</color>
+    <color name="textPrimary">#F2F4F8</color>
+    <color name="textSecondary">#8A93A6</color>
+    <color name="outline">#2A3450</color>
+    <color name="ic_launcher_bg">#0B0F1A</color>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.YingYue" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/moonGold</item>
+        <item name="colorOnPrimary">#141408</item>
+        <item name="colorSecondary">@color/moonGold</item>
+        <item name="colorOnSecondary">#141408</item>
+        <item name="android:colorBackground">@color/nightBg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/textSecondary</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="android:statusBarColor">@color/nightBg</item>
+        <item name="android:navigationBarColor">@color/nightBg</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorHint">@color/textSecondary</item>
+    </style>
+</resources>
