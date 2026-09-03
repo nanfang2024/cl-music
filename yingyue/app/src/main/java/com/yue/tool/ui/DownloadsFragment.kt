@@ -1,9 +1,11 @@
 package com.yue.tool.ui
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +26,7 @@ class DownloadsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: DownloadHistoryAdapter
+    private var player: MediaPlayer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -34,6 +37,7 @@ class DownloadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = DownloadHistoryAdapter(
+            onPlay = { playRecord(it) },
             onShare = { shareRecord(it) },
             onDelete = { confirmDelete(it) }
         )
@@ -75,6 +79,24 @@ class DownloadsFragment : Fragment() {
             }
         } catch (e: Exception) {
             null
+        }
+    }
+
+    private fun playRecord(record: DownloadRecord) {
+        val uri = resolveUri(record) ?: run {
+            toast(getString(R.string.file_missing))
+            return
+        }
+        try {
+            player?.release()
+            player = MediaPlayer().apply {
+                setDataSource(requireContext(), uri)
+                setOnCompletionListener { releasePlayer() }
+                prepareAsync()
+                setOnPreparedListener { it.start() }
+            }
+        } catch (e: Exception) {
+            toast(getString(R.string.play_failed))
         }
     }
 
@@ -139,12 +161,18 @@ class DownloadsFragment : Fragment() {
         else -> "audio/mpeg"
     }
 
+    private fun releasePlayer() {
+        player?.release()
+        player = null
+    }
+
     private fun toast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        releasePlayer()
         _binding = null
     }
 }

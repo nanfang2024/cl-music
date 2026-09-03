@@ -14,6 +14,7 @@ import java.util.Locale
 
 class DownloadHistoryAdapter(
     private val records: MutableList<DownloadRecord> = mutableListOf(),
+    private val onPlay: (DownloadRecord) -> Unit,
     private val onShare: (DownloadRecord) -> Unit,
     private val onDelete: (DownloadRecord) -> Unit
 ) : RecyclerView.Adapter<DownloadHistoryAdapter.Holder>() {
@@ -78,6 +79,7 @@ class DownloadHistoryAdapter(
                 )
             )
 
+            buttonPlay.setOnClickListener { onPlay(record) }
             buttonShare.setOnClickListener { onShare(record) }
             buttonDelete.setOnClickListener { onDelete(record) }
         }
