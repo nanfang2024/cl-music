@@ -31,6 +31,7 @@
     <string name="no_app_to_handle">没有应用可处理此操作</string>
     <string name="source_joox">绿鹅</string>
     <string name="source_netease">芸朵</string>
+    <string name="tab_downloads">下载</string>
     <string name="tab_home">首页</string>
     <string name="tab_settings">设置</string>
     <string name="telegram_channel">Telegram 频道 @ngtool</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,36 +17,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/label_download_list"
+            android:text="@string/tab_settings"
             android:textColor="@color/moonGold"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-        <!-- 下载列表卡片 -->
-        <LinearLayout
-            style="@style/SettingsCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerDownloads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never" />
-
-            <TextView
-                android:id="@+id/textEmptyDownloads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingVertical="20dp"
-                android:text="@string/empty_downloads"
-                android:textColor="@color/textSecondary"
-                android:textSize="13sp" />
-        </LinearLayout>
 
         <!-- 下载目录 -->
         <TextView
@@ -69,7 +43,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textPath"
                     style="@style/SettingsRowTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -193,4 +166,4 @@
         </LinearLayout>
 
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

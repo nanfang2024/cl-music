@@ -4,27 +4,27 @@
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-36:/layout/activity_main.xml"
     },
     {
-        "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/item_track.xml",
-        "source": "com.yue.tool.app-main-36:/layout/item_track.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/activity_main.xml",
-        "source": "com.yue.tool.app-main-36:/layout/activity_main.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/fragment_home.xml",
-        "source": "com.yue.tool.app-main-36:/layout/fragment_home.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-34:/layout/fragment_settings.xml",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-36:/layout/fragment_settings.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-34:/layout/item_track.xml",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-36:/layout/item_track.xml"
     },
     {
-        "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/item_download.xml",
-        "source": "com.yue.tool.app-main-36:/layout/item_download.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-34:/layout/item_download.xml",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-36:/layout/item_download.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/fragment_downloads.xml",
+        "source": "com.yue.tool.app-main-36:/layout/fragment_downloads.xml"
     },
     {
         "merged": "com.yue.tool.app-mergeReleaseResources-34:/layout/fragment_settings.xml",
         "source": "com.yue.tool.app-main-36:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-34:/layout/fragment_home.xml",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-36:/layout/fragment_home.xml"
     }
 ]

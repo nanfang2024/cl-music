@@ -46,6 +46,7 @@ id fragmentContainer
 id groupTheme
 id imageCover
 id imageIcon
+id nav_downloads
 id nav_home
 id nav_settings
 id progress
@@ -59,11 +60,11 @@ id textEmpty
 id textEmptyDownloads
 id textMeta
 id textName
-id textPath
 id textSource
 id textSubtitle
 id textTitle
 layout activity_main
+layout fragment_downloads
 layout fragment_home
 layout fragment_settings
 layout item_download
@@ -93,6 +94,7 @@ string label_theme
 string no_app_to_handle
 string source_joox
 string source_netease
+string tab_downloads
 string tab_home
 string tab_settings
 string telegram_channel

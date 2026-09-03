@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.yue.tool.R;
@@ -21,7 +19,7 @@ import java.lang.String;
 
 public final class FragmentSettingsBinding implements ViewBinding {
   @NonNull
-  private final NestedScrollView rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final LinearLayout cardTelegram;
@@ -38,34 +36,20 @@ public final class FragmentSettingsBinding implements ViewBinding {
   @NonNull
   public final RadioButton radioSystem;
 
-  @NonNull
-  public final RecyclerView recyclerDownloads;
-
-  @NonNull
-  public final TextView textEmptyDownloads;
-
-  @NonNull
-  public final TextView textPath;
-
-  private FragmentSettingsBinding(@NonNull NestedScrollView rootView,
-      @NonNull LinearLayout cardTelegram, @NonNull RadioGroup groupTheme,
-      @NonNull RadioButton radioDark, @NonNull RadioButton radioLight,
-      @NonNull RadioButton radioSystem, @NonNull RecyclerView recyclerDownloads,
-      @NonNull TextView textEmptyDownloads, @NonNull TextView textPath) {
+  private FragmentSettingsBinding(@NonNull ScrollView rootView, @NonNull LinearLayout cardTelegram,
+      @NonNull RadioGroup groupTheme, @NonNull RadioButton radioDark,
+      @NonNull RadioButton radioLight, @NonNull RadioButton radioSystem) {
     this.rootView = rootView;
     this.cardTelegram = cardTelegram;
     this.groupTheme = groupTheme;
     this.radioDark = radioDark;
     this.radioLight = radioLight;
     this.radioSystem = radioSystem;
-    this.recyclerDownloads = recyclerDownloads;
-    this.textEmptyDownloads = textEmptyDownloads;
-    this.textPath = textPath;
   }
 
   @Override
   @NonNull
-  public NestedScrollView getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -120,26 +104,8 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.recyclerDownloads;
-      RecyclerView recyclerDownloads = ViewBindings.findChildViewById(rootView, id);
-      if (recyclerDownloads == null) {
-        break missingId;
-      }
-
-      id = R.id.textEmptyDownloads;
-      TextView textEmptyDownloads = ViewBindings.findChildViewById(rootView, id);
-      if (textEmptyDownloads == null) {
-        break missingId;
-      }
-
-      id = R.id.textPath;
-      TextView textPath = ViewBindings.findChildViewById(rootView, id);
-      if (textPath == null) {
-        break missingId;
-      }
-
-      return new FragmentSettingsBinding((NestedScrollView) rootView, cardTelegram, groupTheme,
-          radioDark, radioLight, radioSystem, recyclerDownloads, textEmptyDownloads, textPath);
+      return new FragmentSettingsBinding((ScrollView) rootView, cardTelegram, groupTheme, radioDark,
+          radioLight, radioSystem);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

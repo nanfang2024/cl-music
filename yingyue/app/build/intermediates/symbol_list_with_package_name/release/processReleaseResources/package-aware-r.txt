@@ -3441,6 +3441,7 @@ id mtrl_picker_text_input_range_start
 id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
+id nav_downloads
 id nav_home
 id nav_settings
 id navigation_bar_item_active_indicator_view
@@ -3599,7 +3600,6 @@ id textEmptyDownloads
 id textEnd
 id textMeta
 id textName
-id textPath
 id textSource
 id textSpacerNoButtons
 id textSpacerNoTitle
@@ -3789,6 +3789,7 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout fragment_downloads
 layout fragment_home
 layout fragment_settings
 layout ime_base_split_test_activity
@@ -4048,6 +4049,7 @@ string side_sheet_behavior
 string source_joox
 string source_netease
 string status_bar_notification_info_overflow
+string tab_downloads
 string tab_home
 string tab_settings
 string telegram_channel
