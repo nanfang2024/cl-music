@@ -84,7 +84,10 @@ class TrackAdapter(
                 append(track.album)
             }
         }
-        binding.textSource.text = if (track.source == "joox") "JOOX" else "网易云"
+        binding.textSource.text =
+            binding.root.context.getString(
+                if (track.source == "joox") R.string.source_joox else R.string.source_netease
+            )
 
         bindCover(binding, track)
         bindState(binding, track)
