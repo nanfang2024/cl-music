@@ -5,89 +5,74 @@
     android:layout_height="wrap_content"
     android:background="@color/appBg"
     android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:paddingVertical="10dp">
+
+    <TextView
+        android:id="@+id/textIndex"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textSecondary"
+        android:textSize="13sp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingVertical="10dp">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <!-- 专辑封面 -->
-        <ImageView
-            android:id="@+id/imageCover"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_cover_placeholder"
-            android:contentDescription="@string/album_cover"
-            android:scaleType="centerCrop" />
-
-        <!-- 歌曲信息 -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/textPrimary"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp" />
+                android:id="@+id/textSource"
+                style="@style/PillText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textArtist"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/textSecondary"
-                android:textSize="13sp" />
-
-            <!-- 音源 pill（浅米色背景 金色文字，类似截图里的芸朵） -->
-            <TextView
-                android:id="@+id/textSource"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/bg_source_pill"
-                android:gravity="center"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
         </LinearLayout>
-
-        <!-- 三角播放图标 -->
-        <ImageButton
-            android:id="@+id/buttonPlay"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/tab_home"
-            android:src="@drawable/ic_play_tri"
-            app:tint="@color/textSecondary" />
-
-        <!-- 下载图标（金色向下箭头） -->
-        <ImageButton
-            android:id="@+id/buttonDownload"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/download"
-            android:src="@drawable/ic_download_down"
-            app:tint="@color/moonGold" />
     </LinearLayout>
 
-    <!-- 分隔线 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="68dp"
-        android:background="@color/divider" />
+    <ImageButton
+        android:id="@+id/buttonPlay"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/tab_home"
+        android:src="@drawable/ic_play"
+        app:tint="@color/textSecondary" />
+
+    <ImageButton
+        android:id="@+id/buttonDownload"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/download"
+        android:src="@drawable/ic_download"
+        app:tint="@color/moonGold" />
+
 </LinearLayout>

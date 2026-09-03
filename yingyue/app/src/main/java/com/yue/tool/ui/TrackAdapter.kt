@@ -3,17 +3,14 @@ package com.yue.tool.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yue.tool.R
 import com.yue.tool.api.Track
 import com.yue.tool.databinding.ItemTrackBinding
-import com.yue.tool.util.CoverLoader
 
 class TrackAdapter(
-    private val scope: LifecycleCoroutineScope,
     private val onDownload: (Track) -> Unit,
     private val onPlay: (Track) -> Unit
 ) : ListAdapter<Track, TrackAdapter.Holder>(DIFF) {
@@ -44,6 +41,7 @@ class TrackAdapter(
         val track = getItem(position)
         val ctx = holder.binding.root.context
         with(holder.binding) {
+            textIndex.text = (position + 1).toString()
             textName.text = track.name
             textArtist.text = buildString {
                 append(track.artist)
@@ -56,25 +54,16 @@ class TrackAdapter(
                     else -> R.string.source_netease
                 }
             )
-            // 音源 pill：截图里用的是浅米色背景 + 金色字（所有音源统一风格）
-            textSource.setTextColor(ContextCompat.getColor(ctx, R.color.sourcePillText))
+            val colorRes = when (track.source) {
+                "joox" -> R.color.jooxPill
+                "kuwo" -> R.color.kuwoPill
+                else -> R.color.neteasePill
+            }
+            textSource.setTextColor(ContextCompat.getColor(ctx, colorRes))
 
-            // 封面
-            CoverLoader.load(
-                scope = scope,
-                url = track.coverUrl,
-                target = imageCover,
-                placeholderRes = R.drawable.bg_cover_placeholder
-            )
-
-            // 播放/停止图标
             buttonPlay.setImageResource(
-                if (track.id == playingId) R.drawable.ic_stop_square else R.drawable.ic_play_tri
+                if (track.id == playingId) R.drawable.ic_stop else R.drawable.ic_play
             )
-            val playTint = if (track.id == playingId)
-                R.color.moonGold else R.color.textSecondary
-            buttonPlay.setColorFilter(ContextCompat.getColor(ctx, playTint))
-
             buttonPlay.setOnClickListener { onPlay(track) }
             buttonDownload.setOnClickListener { onDownload(track) }
         }

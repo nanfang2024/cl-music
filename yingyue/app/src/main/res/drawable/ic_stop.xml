@@ -4,7 +4,11 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- 两条竖线，表示暂停 || -->
     <path
         android:fillColor="#FFFFFFFF"
-        android:pathData="M6,6h12v12H6z" />
+        android:pathData="M9,5v14h2V5H9z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M13,5v14h2V5h-2z" />
 </vector>
