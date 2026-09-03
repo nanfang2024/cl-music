@@ -4,6 +4,10 @@
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/item_download.xml"
     },
     {
+        "merged": "com.yue.tool.app-mergeReleaseResources-37:/layout/item_download.xml",
+        "source": "com.yue.tool.app-main-39:/layout/item_download.xml"
+    },
+    {
         "merged": "com.yue.tool.app-mergeReleaseResources-37:/layout/activity_main.xml",
         "source": "com.yue.tool.app-main-39:/layout/activity_main.xml"
     },
@@ -22,6 +26,10 @@
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-37:/layout/fragment_settings.xml",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-mergeReleaseResources-37:/layout/item_track.xml",
+        "source": "com.yue.tool.app-main-39:/layout/item_track.xml"
     },
     {
         "merged": "com.yue.tool.app-mergeReleaseResources-37:/layout/fragment_home.xml",

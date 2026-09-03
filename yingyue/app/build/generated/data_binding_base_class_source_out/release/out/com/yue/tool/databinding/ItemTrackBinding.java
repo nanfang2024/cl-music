@@ -4,6 +4,7 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.yue.tool.R;
+import com.yue.tool.util.EqualizerView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -25,7 +27,10 @@ public final class ItemTrackBinding implements ViewBinding {
   public final ImageButton buttonDownload;
 
   @NonNull
-  public final TextView buttonPlay;
+  public final FrameLayout buttonPlay;
+
+  @NonNull
+  public final EqualizerView equalizer;
 
   @NonNull
   public final ImageView imageCover;
@@ -40,18 +45,24 @@ public final class ItemTrackBinding implements ViewBinding {
   public final TextView textName;
 
   @NonNull
+  public final TextView textPlayIcon;
+
+  @NonNull
   public final TextView textSource;
 
   private ItemTrackBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDownload,
-      @NonNull TextView buttonPlay, @NonNull ImageView imageCover, @NonNull TextView textArtist,
-      @NonNull TextView textIndex, @NonNull TextView textName, @NonNull TextView textSource) {
+      @NonNull FrameLayout buttonPlay, @NonNull EqualizerView equalizer,
+      @NonNull ImageView imageCover, @NonNull TextView textArtist, @NonNull TextView textIndex,
+      @NonNull TextView textName, @NonNull TextView textPlayIcon, @NonNull TextView textSource) {
     this.rootView = rootView;
     this.buttonDownload = buttonDownload;
     this.buttonPlay = buttonPlay;
+    this.equalizer = equalizer;
     this.imageCover = imageCover;
     this.textArtist = textArtist;
     this.textIndex = textIndex;
     this.textName = textName;
+    this.textPlayIcon = textPlayIcon;
     this.textSource = textSource;
   }
 
@@ -89,8 +100,14 @@ public final class ItemTrackBinding implements ViewBinding {
       }
 
       id = R.id.buttonPlay;
-      TextView buttonPlay = ViewBindings.findChildViewById(rootView, id);
+      FrameLayout buttonPlay = ViewBindings.findChildViewById(rootView, id);
       if (buttonPlay == null) {
+        break missingId;
+      }
+
+      id = R.id.equalizer;
+      EqualizerView equalizer = ViewBindings.findChildViewById(rootView, id);
+      if (equalizer == null) {
         break missingId;
       }
 
@@ -118,14 +135,20 @@ public final class ItemTrackBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.textPlayIcon;
+      TextView textPlayIcon = ViewBindings.findChildViewById(rootView, id);
+      if (textPlayIcon == null) {
+        break missingId;
+      }
+
       id = R.id.textSource;
       TextView textSource = ViewBindings.findChildViewById(rootView, id);
       if (textSource == null) {
         break missingId;
       }
 
-      return new ItemTrackBinding((LinearLayout) rootView, buttonDownload, buttonPlay, imageCover,
-          textArtist, textIndex, textName, textSource);
+      return new ItemTrackBinding((LinearLayout) rootView, buttonDownload, buttonPlay, equalizer,
+          imageCover, textArtist, textIndex, textName, textPlayIcon, textSource);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">映月</string>
+    <string name="tagline">三源聚合 · 月下听歌</string>
+    <string name="empty_title">夜色正好，乐海待寻</string>
+    <string name="empty_desc">搜一首歌，让月光洒进来</string>
+    <string name="action_view">查看</string>
 
     <string name="source_netease">芸朵</string>
     <string name="source_joox">绿鹅</string>

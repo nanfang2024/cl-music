@@ -1,8 +1,11 @@
 package com.yue.tool.player
 
 import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.yue.tool.api.Track
 import com.yue.tool.util.ImageLoader
@@ -29,8 +32,27 @@ object PlayerManager {
     private var miniName: TextView? = null
     private var miniArtist: TextView? = null
     private var miniBtnPlay: TextView? = null
+    private var miniProgress: ProgressBar? = null
 
-    // 外部回调：播放状态变化时通知（如 TrackAdapter 更新 ▶/‖ 图标）
+    // 进度刷新
+    private val handler = Handler(Looper.getMainLooper())
+    private val progressRunnable = object : Runnable {
+        override fun run() {
+            val mp = player
+            if (mp != null && isPlaying) {
+                try {
+                    val dur = mp.duration
+                    if (dur > 0) {
+                        miniProgress?.progress = (mp.currentPosition * 100 / dur)
+                    }
+                } catch (_: IllegalStateException) {
+                }
+            }
+            handler.postDelayed(this, 500)
+        }
+    }
+
+    // 外部回调：播放状态变化时通知（如 TrackAdapter 更新图标）
     var onStateChange: ((trackId: String?, isPlaying: Boolean) -> Unit)? = null
 
     fun bind(
@@ -38,22 +60,23 @@ object PlayerManager {
         cover: ImageView,
         name: TextView,
         artist: TextView,
-        btnPlay: TextView
+        btnPlay: TextView,
+        progress: ProgressBar
     ) {
         miniBar = bar
         miniCover = cover
         miniName = name
         miniArtist = artist
         miniBtnPlay = btnPlay
+        miniProgress = progress
 
         btnPlay.setOnClickListener {
             if (isPlaying) pause() else resume()
         }
-        bar.setOnClickListener {
-            // 点击迷你播放器区域不做什么，只是拦截点击穿透
-        }
 
         updateUI()
+        handler.removeCallbacks(progressRunnable)
+        handler.post(progressRunnable)
     }
 
     fun unbind() {
@@ -62,10 +85,7 @@ object PlayerManager {
         miniName = null
         miniArtist = null
         miniBtnPlay = null
-    }
-
-    fun isPlaying(trackId: String?): Boolean {
-        return isPlaying && currentTrack?.id == trackId
+        miniProgress = null
     }
 
     fun getCurrentTrackId(): String? = currentTrack?.id
@@ -74,8 +94,6 @@ object PlayerManager {
      * 开始播放一首歌：解析链接 → MediaPlayer → 播放
      */
     fun startPlay(track: Track, onResolveFail: () -> Unit) {
-        // 同一首歌且正在播放 → 不重复播放
-        if (currentTrack?.id == track.id && isPlaying) return
         // 先停止当前
         stopInternal()
 
@@ -83,8 +101,10 @@ object PlayerManager {
         // 显示加载中状态
         miniBar?.visibility = View.VISIBLE
         miniName?.text = "解析中…"
+        miniName?.isSelected = false
         miniArtist?.text = "${track.name} · ${track.artist}"
         miniBtnPlay?.text = "··"
+        miniProgress?.progress = 0
         miniCover?.let { ImageLoader.load(it, track.coverUrl) }
 
         resolveJob = CoroutineScope(Dispatchers.Main).launch {
@@ -186,9 +206,11 @@ object PlayerManager {
             val track = currentTrack
             if (track == null) {
                 miniBar?.visibility = View.GONE
+                miniProgress?.progress = 0
             } else {
                 miniBar?.visibility = View.VISIBLE
                 miniName?.text = track.name
+                miniName?.isSelected = true  // 跑马灯需要 selected 状态
                 miniArtist?.text = track.artist
                 miniBtnPlay?.text = if (isPlaying) "‖" else "▶"
                 miniCover?.let {

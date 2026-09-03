@@ -2928,6 +2928,7 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable divider_list
 drawable ic_arrow_back_black_24
 drawable ic_call_answer
 drawable ic_call_answer_low
@@ -2940,9 +2941,11 @@ drawable ic_clock_black_24dp
 drawable ic_cover_placeholder
 drawable ic_delete
 drawable ic_download
+drawable ic_empty_moon
 drawable ic_home
 drawable ic_keyboard_black_24dp
 drawable ic_launcher_foreground
+drawable ic_logo_moon
 drawable ic_m3_chip_check
 drawable ic_m3_chip_checked_circle
 drawable ic_m3_chip_close
@@ -2951,6 +2954,7 @@ drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_play
+drawable ic_search
 drawable ic_search_black_24
 drawable ic_settings
 drawable ic_share
@@ -3202,6 +3206,7 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id equalizer
 id escape
 id exitUntilCollapsed
 id expand_activities_button
@@ -3255,6 +3260,7 @@ id jumpToEnd
 id jumpToStart
 id labeled
 id layout
+id layoutEmpty
 id left
 id leftToRight
 id legacy
@@ -3299,6 +3305,7 @@ id miniBtnStop
 id miniCover
 id miniName
 id miniPlayer
+id miniProgress
 id month_grid
 id month_navigation_bar
 id month_navigation_fragment_toggle
@@ -3480,6 +3487,7 @@ id textInfo
 id textName
 id textPathValue
 id textPercent
+id textPlayIcon
 id textSource
 id textSpacerNoButtons
 id textSpacerNoTitle
@@ -3763,6 +3771,7 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
+string action_view
 string androidx_startup
 string app_name
 string appbar_scrolling_view_behavior
@@ -3796,6 +3805,8 @@ string download_failed
 string downloading
 string downloads_empty
 string downloads_title
+string empty_desc
+string empty_title
 string error_a11y_label
 string error_icon_content_description
 string exposed_dropdown_menu_content_description
@@ -3940,6 +3951,7 @@ string status_searching
 string tab_downloads
 string tab_home
 string tab_settings
+string tagline
 string theme_dark
 string theme_light
 string theme_system

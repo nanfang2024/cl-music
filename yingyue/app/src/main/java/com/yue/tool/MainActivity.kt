@@ -1,7 +1,6 @@
 package com.yue.tool
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.yue.tool.data.ThemePrefs
@@ -26,7 +25,8 @@ class MainActivity : AppCompatActivity() {
             cover = binding.miniCover,
             name = binding.miniName,
             artist = binding.miniArtist,
-            btnPlay = binding.miniBtnPlay
+            btnPlay = binding.miniBtnPlay,
+            progress = binding.miniProgress
         )
         // 停止按钮
         binding.miniBtnStop.setOnClickListener {
@@ -58,6 +58,11 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         PlayerManager.unbind()
         PlayerManager.stop()
+    }
+
+    /** 跳转到下载页（Snackbar「查看」用） */
+    fun switchToDownloads() {
+        binding.bottomNav.selectedItemId = R.id.nav_downloads
     }
 
     private fun switchTo(itemId: Int) {

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,10 +47,14 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final LinearLayout miniPlayer;
 
+  @NonNull
+  public final ProgressBar miniProgress;
+
   private ActivityMainBinding(@NonNull LinearLayout rootView,
       @NonNull BottomNavigationView bottomNav, @NonNull FrameLayout fragmentContainer,
       @NonNull TextView miniArtist, @NonNull TextView miniBtnPlay, @NonNull TextView miniBtnStop,
-      @NonNull ImageView miniCover, @NonNull TextView miniName, @NonNull LinearLayout miniPlayer) {
+      @NonNull ImageView miniCover, @NonNull TextView miniName, @NonNull LinearLayout miniPlayer,
+      @NonNull ProgressBar miniProgress) {
     this.rootView = rootView;
     this.bottomNav = bottomNav;
     this.fragmentContainer = fragmentContainer;
@@ -59,6 +64,7 @@ public final class ActivityMainBinding implements ViewBinding {
     this.miniCover = miniCover;
     this.miniName = miniName;
     this.miniPlayer = miniPlayer;
+    this.miniProgress = miniProgress;
   }
 
   @Override
@@ -136,8 +142,14 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.miniProgress;
+      ProgressBar miniProgress = ViewBindings.findChildViewById(rootView, id);
+      if (miniProgress == null) {
+        break missingId;
+      }
+
       return new ActivityMainBinding((LinearLayout) rootView, bottomNav, fragmentContainer,
-          miniArtist, miniBtnPlay, miniBtnStop, miniCover, miniName, miniPlayer);
+          miniArtist, miniBtnPlay, miniBtnStop, miniCover, miniName, miniPlayer, miniProgress);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

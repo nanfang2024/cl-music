@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yue.tool.R
 import com.yue.tool.data.DownloadRecord
 import com.yue.tool.databinding.ItemDownloadBinding
+import com.yue.tool.util.ImageLoader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -49,7 +50,7 @@ class DownloadHistoryAdapter(
         with(holder.binding) {
             textName.text = record.name
             textArtist.text = record.artist
-            // Minor #15: 显示文件大小
+            // 显示文件大小
             val sizeText = if (record.size > 0)
                 Formatter.formatFileSize(ctx, record.size) else ""
             textFormat.text = buildString {
@@ -67,16 +68,26 @@ class DownloadHistoryAdapter(
                     else -> R.string.source_netease
                 }
             )
-            textSource.setTextColor(
-                ContextCompat.getColor(
-                    ctx,
-                    when (record.source) {
-                        "joox" -> R.color.jooxPill
-                        "kuwo" -> R.color.kuwoPill
-                        else -> R.color.neteasePill
-                    }
-                )
+            // 软底 pill
+            val pillColor = ContextCompat.getColor(
+                ctx,
+                when (record.source) {
+                    "joox" -> R.color.jooxPill
+                    "kuwo" -> R.color.kuwoPill
+                    else -> R.color.neteasePill
+                }
             )
+            textSource.setTextColor(pillColor)
+            textSource.background?.mutate()?.setTint(
+                (pillColor and 0x00FFFFFF) or 0x24000000
+            )
+
+            // 封面
+            if (!record.coverUrl.isNullOrEmpty()) {
+                ImageLoader.load(imageCover, record.coverUrl)
+            } else {
+                imageCover.setImageResource(R.drawable.ic_cover_placeholder)
+            }
 
             buttonShare.setOnClickListener { onShare(record) }
             buttonDelete.setOnClickListener { onDelete(record) }

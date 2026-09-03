@@ -39,6 +39,18 @@ class DownloadsFragment : Fragment() {
         )
         binding.listDownloads.layoutManager = LinearLayoutManager(requireContext())
         binding.listDownloads.adapter = adapter
+        // 列表分隔线
+        binding.listDownloads.addItemDecoration(
+            androidx.recyclerview.widget.DividerItemDecoration(
+                requireContext(), androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
+            ).apply {
+                setDrawable(
+                    androidx.core.content.ContextCompat.getDrawable(
+                        requireContext(), R.drawable.divider_list
+                    )!!
+                )
+            }
+        )
     }
 
     override fun onResume() {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- 空状态大月亮 -->
+    <path
+        android:fillColor="@color/moonGold"
+        android:fillAlpha="0.35"
+        android:pathData="M30,4 C19,6 11,15.5 11,26.5 C11,34 15,40.5 21,44 C10.5,42 3,33 3,22.5 C3,11.2 12.2,2 23.5,2 C25.8,2 28,2.7 30,4 Z" />
+    <path
+        android:fillColor="@color/moonGold"
+        android:fillAlpha="0.35"
+        android:pathData="M38,10 L39.2,13.3 L42.5,14.5 L39.2,15.7 L38,19 L36.8,15.7 L33.5,14.5 L36.8,13.3 Z" />
+</vector>

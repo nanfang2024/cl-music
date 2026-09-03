@@ -13,9 +13,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.yue.tool.R
 import com.yue.tool.api.MusicApi
 import com.yue.tool.api.Track
@@ -63,15 +65,22 @@ class HomeFragment : Fragment() {
         )
         binding.listTracks.layoutManager = LinearLayoutManager(requireContext())
         binding.listTracks.adapter = adapter
+        // 列表分隔线
+        binding.listTracks.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL).apply {
+                setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list)!!)
+            }
+        )
+        // 初始显示空状态，隐藏列表
+        binding.listTracks.visibility = View.GONE
 
         // 注册播放器状态回调
         PlayerManager.onStateChange = { trackId, isPlaying ->
-            adapter.setPlaying(if (isPlaying) trackId else null)
+            adapter.setPlayingState(trackId, isPlaying)
         }
         // 恢复已有播放状态
-        val currentId = PlayerManager.getCurrentTrackId()
-        if (currentId != null) {
-            adapter.setPlaying(currentId)
+        PlayerManager.getCurrentTrackId()?.let {
+            adapter.setPlayingState(it, true)
         }
 
         binding.btnSearch.setOnClickListener { doSearch() }
@@ -152,6 +161,7 @@ class HomeFragment : Fragment() {
         binding.textStatus.text = getString(R.string.status_searching)
         binding.progressSearch.visibility = View.VISIBLE
         binding.btnSearch.isEnabled = false
+        binding.layoutEmpty.visibility = View.GONE
 
         searchJob = lifecycleScope.launch {
             val result = withContext(Dispatchers.IO) {
@@ -167,7 +177,14 @@ class HomeFragment : Fragment() {
             tracks.addAll(result)
             adapter.submitList(result)
             binding.textStatus.text = getString(R.string.status_result_count, result.size)
-            if (result.isEmpty()) toast(getString(R.string.status_empty))
+            if (result.isEmpty()) {
+                binding.layoutEmpty.visibility = View.VISIBLE
+                binding.listTracks.visibility = View.GONE
+                toast(getString(R.string.status_empty))
+            } else {
+                binding.layoutEmpty.visibility = View.GONE
+                binding.listTracks.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -238,7 +255,9 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
-                    Triple(resolved, dl.uri, dl.size)
+                    // 下载时顺便解析封面（失败不影响下载）
+                    val cover = runCatching { MusicApi.resolveCover(track) }.getOrNull()
+                    Triple(resolved, dl, cover)
                 } catch (e: Exception) {
                     // Major #9: 保留错误详情
                     errorDetail = e.message ?: e.javaClass.simpleName
@@ -249,7 +268,7 @@ class HomeFragment : Fragment() {
             if (result == null) {
                 toast(getString(R.string.download_failed) + errorDetail?.let { "：$it" }.orEmpty())
             } else {
-                val (resolved, uri, size) = result
+                val (resolved, dl, cover) = result
                 DownloadHistory.add(
                     requireContext(),
                     DownloadRecord(
@@ -259,11 +278,19 @@ class HomeFragment : Fragment() {
                         format = resolved.ext,
                         quality = resolved.qualityLabel,
                         time = System.currentTimeMillis(),
-                        uri = uri.toString(),
-                        size = size
+                        uri = dl.uri.toString(),
+                        size = dl.size,
+                        coverUrl = cover
                     )
                 )
-                toast(getString(R.string.download_done, resolved.qualityLabel, resolved.ext))
+                // Snackbar 带「查看」跳转下载页
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.download_done, resolved.qualityLabel, resolved.ext),
+                    Snackbar.LENGTH_LONG
+                ).setAction(getString(R.string.action_view)) {
+                    (activity as? com.yue.tool.MainActivity)?.switchToDownloads()
+                }.show()
             }
         }
     }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -27,6 +28,9 @@ public final class ItemDownloadBinding implements ViewBinding {
   public final ImageButton buttonShare;
 
   @NonNull
+  public final ImageView imageCover;
+
+  @NonNull
   public final TextView textArtist;
 
   @NonNull
@@ -42,11 +46,13 @@ public final class ItemDownloadBinding implements ViewBinding {
   public final TextView textTime;
 
   private ItemDownloadBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDelete,
-      @NonNull ImageButton buttonShare, @NonNull TextView textArtist, @NonNull TextView textFormat,
-      @NonNull TextView textName, @NonNull TextView textSource, @NonNull TextView textTime) {
+      @NonNull ImageButton buttonShare, @NonNull ImageView imageCover, @NonNull TextView textArtist,
+      @NonNull TextView textFormat, @NonNull TextView textName, @NonNull TextView textSource,
+      @NonNull TextView textTime) {
     this.rootView = rootView;
     this.buttonDelete = buttonDelete;
     this.buttonShare = buttonShare;
+    this.imageCover = imageCover;
     this.textArtist = textArtist;
     this.textFormat = textFormat;
     this.textName = textName;
@@ -93,6 +99,12 @@ public final class ItemDownloadBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.imageCover;
+      ImageView imageCover = ViewBindings.findChildViewById(rootView, id);
+      if (imageCover == null) {
+        break missingId;
+      }
+
       id = R.id.textArtist;
       TextView textArtist = ViewBindings.findChildViewById(rootView, id);
       if (textArtist == null) {
@@ -123,8 +135,8 @@ public final class ItemDownloadBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemDownloadBinding((LinearLayout) rootView, buttonDelete, buttonShare, textArtist,
-          textFormat, textName, textSource, textTime);
+      return new ItemDownloadBinding((LinearLayout) rootView, buttonDelete, buttonShare, imageCover,
+          textArtist, textFormat, textName, textSource, textTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

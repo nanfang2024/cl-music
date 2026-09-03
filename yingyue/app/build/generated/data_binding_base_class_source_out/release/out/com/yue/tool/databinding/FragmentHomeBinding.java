@@ -4,8 +4,8 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,7 +26,7 @@ public final class FragmentHomeBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final Button btnSearch;
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipJoox;
@@ -53,6 +53,9 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final EditText inputKeyword;
 
   @NonNull
+  public final LinearLayout layoutEmpty;
+
+  @NonNull
   public final RecyclerView listTracks;
 
   @NonNull
@@ -64,12 +67,13 @@ public final class FragmentHomeBinding implements ViewBinding {
   @NonNull
   public final TextView textStatus;
 
-  private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull Button btnSearch,
+  private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnSearch,
       @NonNull Chip chipJoox, @NonNull Chip chipKuwo, @NonNull Chip chipNetease,
       @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
       @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
-      @NonNull RecyclerView listTracks, @NonNull ProgressBar progressSearch,
-      @NonNull ChipGroup qualityGroup, @NonNull TextView textStatus) {
+      @NonNull LinearLayout layoutEmpty, @NonNull RecyclerView listTracks,
+      @NonNull ProgressBar progressSearch, @NonNull ChipGroup qualityGroup,
+      @NonNull TextView textStatus) {
     this.rootView = rootView;
     this.btnSearch = btnSearch;
     this.chipJoox = chipJoox;
@@ -80,6 +84,7 @@ public final class FragmentHomeBinding implements ViewBinding {
     this.chipQuality740 = chipQuality740;
     this.chipQuality999 = chipQuality999;
     this.inputKeyword = inputKeyword;
+    this.layoutEmpty = layoutEmpty;
     this.listTracks = listTracks;
     this.progressSearch = progressSearch;
     this.qualityGroup = qualityGroup;
@@ -114,7 +119,7 @@ public final class FragmentHomeBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.btnSearch;
-      Button btnSearch = ViewBindings.findChildViewById(rootView, id);
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
       if (btnSearch == null) {
         break missingId;
       }
@@ -167,6 +172,12 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.layoutEmpty;
+      LinearLayout layoutEmpty = ViewBindings.findChildViewById(rootView, id);
+      if (layoutEmpty == null) {
+        break missingId;
+      }
+
       id = R.id.listTracks;
       RecyclerView listTracks = ViewBindings.findChildViewById(rootView, id);
       if (listTracks == null) {
@@ -193,7 +204,7 @@ public final class FragmentHomeBinding implements ViewBinding {
 
       return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
           chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
-          listTracks, progressSearch, qualityGroup, textStatus);
+          layoutEmpty, listTracks, progressSearch, qualityGroup, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

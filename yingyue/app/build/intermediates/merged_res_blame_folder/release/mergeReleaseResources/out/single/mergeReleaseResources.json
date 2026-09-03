@@ -8,6 +8,10 @@
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_pill.xml"
     },
     {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_search.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_search.xml"
+    },
+    {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_dialog_download.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/dialog_download.xml"
     },
@@ -16,12 +20,16 @@
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_input.xml"
     },
     {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_stop.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_stop.xml"
+    },
+    {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/xml_file_paths.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/xml/file_paths.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_stop.xml.flat",
-        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_stop.xml"
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_empty_moon.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_empty_moon.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/color_nav_item.xml.flat",
@@ -32,16 +40,20 @@
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_fragment_settings.xml.flat",
-        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_settings.xml"
-    },
-    {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_bg_cover.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_cover.xml"
     },
     {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_fragment_settings.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_settings.xml"
+    },
+    {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_telegram.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_telegram.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_divider_list.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/divider_list.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
@@ -54,6 +66,10 @@
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_download.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_download.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_item_download.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/item_download.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_cover_placeholder.xml.flat",
@@ -70,6 +86,10 @@
     {
         "merged": "com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
         "source": "com.yue.tool.app-main-39:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_item_track.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/item_track.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_share.xml.flat",
@@ -90,6 +110,10 @@
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_delete.xml.flat",
         "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_delete.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_logo_moon.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_logo_moon.xml"
     },
     {
         "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
