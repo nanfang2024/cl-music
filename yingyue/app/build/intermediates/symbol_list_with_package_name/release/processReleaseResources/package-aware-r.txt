@@ -3293,6 +3293,12 @@ id matrix
 id message
 id middle
 id mini
+id miniArtist
+id miniBtnPlay
+id miniBtnStop
+id miniCover
+id miniName
+id miniPlayer
 id month_grid
 id month_navigation_bar
 id month_navigation_fragment_toggle
@@ -3474,7 +3480,6 @@ id textInfo
 id textName
 id textPathValue
 id textPercent
-id textPlayerBar
 id textSource
 id textSpacerNoButtons
 id textSpacerNoTitle

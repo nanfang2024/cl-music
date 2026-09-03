@@ -62,9 +62,6 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final ChipGroup qualityGroup;
 
   @NonNull
-  public final TextView textPlayerBar;
-
-  @NonNull
   public final TextView textStatus;
 
   private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull Button btnSearch,
@@ -72,8 +69,7 @@ public final class FragmentHomeBinding implements ViewBinding {
       @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
       @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
       @NonNull RecyclerView listTracks, @NonNull ProgressBar progressSearch,
-      @NonNull ChipGroup qualityGroup, @NonNull TextView textPlayerBar,
-      @NonNull TextView textStatus) {
+      @NonNull ChipGroup qualityGroup, @NonNull TextView textStatus) {
     this.rootView = rootView;
     this.btnSearch = btnSearch;
     this.chipJoox = chipJoox;
@@ -87,7 +83,6 @@ public final class FragmentHomeBinding implements ViewBinding {
     this.listTracks = listTracks;
     this.progressSearch = progressSearch;
     this.qualityGroup = qualityGroup;
-    this.textPlayerBar = textPlayerBar;
     this.textStatus = textStatus;
   }
 
@@ -190,12 +185,6 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.textPlayerBar;
-      TextView textPlayerBar = ViewBindings.findChildViewById(rootView, id);
-      if (textPlayerBar == null) {
-        break missingId;
-      }
-
       id = R.id.textStatus;
       TextView textStatus = ViewBindings.findChildViewById(rootView, id);
       if (textStatus == null) {
@@ -204,7 +193,7 @@ public final class FragmentHomeBinding implements ViewBinding {
 
       return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
           chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
-          listTracks, progressSearch, qualityGroup, textPlayerBar, textStatus);
+          listTracks, progressSearch, qualityGroup, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

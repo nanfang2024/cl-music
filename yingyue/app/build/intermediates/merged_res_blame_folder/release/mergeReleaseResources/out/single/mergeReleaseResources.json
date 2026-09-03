@@ -1,98 +1,106 @@
 [
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_download.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_download.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_item_track.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/item_track.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_home.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_home.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_bg_pill.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_pill.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_bg_pill.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/bg_pill.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_dialog_download.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/dialog_download.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_telegram.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_telegram.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_bg_input.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_input.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/color_nav_item.xml.flat",
-        "source": "com.yue.tool.app-main-39:/color/nav_item.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/xml_file_paths.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/xml/file_paths.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/layout_dialog_download.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/dialog_download.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_stop.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_stop.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/layout_fragment_settings.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/fragment_settings.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/color_nav_item.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/color/nav_item.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_stop.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_stop.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_cover_placeholder.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_cover_placeholder.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_fragment_settings.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_settings.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_share.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_share.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_bg_cover.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/bg_cover.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_settings.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_settings.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_telegram.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_telegram.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/activity_main.xml"
     },
     {
         "merged": "com.yue.tool.app-release-38:/layout_fragment_home.xml.flat",
         "source": "com.yue.tool.app-main-39:/layout/fragment_home.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/layout_item_download.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/item_download.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_download.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_download.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_bg_cover.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/bg_cover.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_cover_placeholder.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_cover_placeholder.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_play.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_play.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/menu_bottom_nav.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/menu/bottom_nav.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_delete.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_delete.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/xml_file_paths.xml.flat",
-        "source": "com.yue.tool.app-main-39:/xml/file_paths.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/drawable_bg_input.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/bg_input.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_fragment_home.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_home.xml"
     },
     {
         "merged": "com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
         "source": "com.yue.tool.app-main-39:/layout/activity_main.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/layout_item_track.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/item_track.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_share.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_share.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.yue.tool.app-main-39:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_settings.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_settings.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/layout_fragment_downloads.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/fragment_downloads.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_fragment_downloads.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/fragment_downloads.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/menu_bottom_nav.xml.flat",
-        "source": "com.yue.tool.app-main-39:/menu/bottom_nav.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/layout_item_download.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/layout/item_download.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_launcher_foreground.xml"
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_delete.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_delete.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_home.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_home.xml"
+    },
+    {
+        "merged": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-release-38:/drawable_ic_play.xml.flat",
+        "source": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-main-39:/drawable/ic_play.xml"
     }
 ]

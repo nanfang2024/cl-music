@@ -161,17 +161,6 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textPlayerBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bg_pill"
-        android:padding="8dp"
-        android:textColor="@color/moonGold"
-        android:textSize="13sp"
-        android:visibility="gone" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listTracks"
         android:layout_width="match_parent"

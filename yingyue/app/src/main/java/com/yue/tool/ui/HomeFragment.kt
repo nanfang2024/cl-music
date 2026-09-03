@@ -2,7 +2,6 @@ package com.yue.tool.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import com.yue.tool.data.DownloadRecord
 import com.yue.tool.databinding.DialogDownloadBinding
 import com.yue.tool.databinding.FragmentHomeBinding
 import com.yue.tool.download.Downloader
+import com.yue.tool.player.PlayerManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -37,10 +37,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var adapter: TrackAdapter
     private val tracks = mutableListOf<Track>()
-
-    private var player: MediaPlayer? = null
-    private var playingTrackId: String? = null
-    private var playerJob: Job? = null
 
     private var searchJob: Job? = null
     private var currentPage = 1
@@ -67,6 +63,16 @@ class HomeFragment : Fragment() {
         )
         binding.listTracks.layoutManager = LinearLayoutManager(requireContext())
         binding.listTracks.adapter = adapter
+
+        // 注册播放器状态回调
+        PlayerManager.onStateChange = { trackId, isPlaying ->
+            adapter.setPlaying(if (isPlaying) trackId else null)
+        }
+        // 恢复已有播放状态
+        val currentId = PlayerManager.getCurrentTrackId()
+        if (currentId != null) {
+            adapter.setPlaying(currentId)
+        }
 
         binding.btnSearch.setOnClickListener { doSearch() }
         // Critical #5: 搜索键 IME 回调
@@ -105,7 +111,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        stopPlayer()
         searchJob?.cancel()
         _binding = null
     }
@@ -186,69 +191,15 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // ==================== 试听 ====================
+    // ==================== 试听（通过 PlayerManager） ====================
 
     private fun togglePlay(track: Track) {
-        // 同一首歌：停止
-        if (playingTrackId == track.id) {
-            stopPlayer()
-            return
+        // 如果是当前播放的歌曲 → 切换播放/暂停
+        if (PlayerManager.togglePlay(track)) return
+        // 否则开始播放新歌
+        PlayerManager.startPlay(track) {
+            toast(getString(R.string.resolve_failed))
         }
-        stopPlayer()
-        binding.textPlayerBar.visibility = View.VISIBLE
-        binding.textPlayerBar.text = getString(R.string.status_resolving) + " · " + track.name
-
-        playerJob = lifecycleScope.launch {
-            val resolved = withContext(Dispatchers.IO) {
-                runCatching { MusicApi.resolveUrl(track, "128k") }.getOrNull()
-            }
-            if (resolved == null) {
-                binding.textPlayerBar.visibility = View.GONE
-                toast(getString(R.string.resolve_failed))
-                return@launch
-            }
-            try {
-                // Critical #1: 先赋值再 prepare，防止回调时 player 为 null
-                val mp = MediaPlayer()
-                player = mp
-                mp.setDataSource(resolved.url)
-                mp.setOnCompletionListener { stopPlayer() }
-                mp.setOnErrorListener { _, what, extra ->
-                    stopPlayer()
-                    toast(getString(R.string.play_failed))
-                    true
-                }
-                mp.setOnPreparedListener {
-                    it.start()
-                    playingTrackId = track.id
-                    adapter.setPlaying(track.id)
-                    binding.textPlayerBar.text = "▶ " + track.name + " · " + track.artist
-                }
-                mp.prepareAsync()
-            } catch (e: Exception) {
-                stopPlayer()
-                toast(getString(R.string.play_failed))
-            }
-        }
-    }
-
-    private fun stopPlayer() {
-        playerJob?.cancel()
-        playerJob = null
-        player?.let { mp ->
-            try {
-                if (mp.isPlaying) mp.stop()
-            } catch (_: Exception) {
-            }
-            try {
-                mp.release()
-            } catch (_: Exception) {
-            }
-        }
-        player = null
-        playingTrackId = null
-        adapter.setPlaying(null)
-        if (_binding != null) binding.textPlayerBar.visibility = View.GONE
     }
 
     // ==================== 下载 ====================

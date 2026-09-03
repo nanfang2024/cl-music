@@ -46,6 +46,12 @@ id imageCover
 id inputKeyword
 id listDownloads
 id listTracks
+id miniArtist
+id miniBtnPlay
+id miniBtnStop
+id miniCover
+id miniName
+id miniPlayer
 id nav_downloads
 id nav_home
 id nav_settings
@@ -63,7 +69,6 @@ id textInfo
 id textName
 id textPathValue
 id textPercent
-id textPlayerBar
 id textSource
 id textStatus
 id textTime
