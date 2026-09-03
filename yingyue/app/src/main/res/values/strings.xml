@@ -6,7 +6,30 @@
     <string name="btn_search">搜索</string>
     <string name="label_source">音源</string>
     <string name="label_quality">音质</string>
-    <string name="source_netease">网易云</string>
-    <string name="source_joox">JOOX</string>
+    <string name="source_netease">芸朵</string>
+    <string name="source_joox">绿鹅</string>
     <string name="empty_default">搜一首歌试试</string>
+
+    <string name="tab_home">首页</string>
+    <string name="tab_settings">设置</string>
+
+    <string name="label_download_list">下载列表</string>
+    <string name="empty_downloads">暂无下载记录</string>
+    <string name="label_download_path">下载目录</string>
+    <string name="download_path_value">Music/映月</string>
+    <string name="download_path_hint">系统公共音乐目录，可在系统文件管理中查看</string>
+    <string name="label_theme">主题</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_light">亮色</string>
+    <string name="theme_dark">暗色</string>
+    <string name="label_follow">关注我们</string>
+    <string name="telegram_channel">Telegram 频道 @ngtool</string>
+    <string name="telegram_hint">获取更新与更多工具</string>
+    <string name="btn_play_desc">播放</string>
+    <string name="btn_share_desc">分享</string>
+    <string name="btn_delete_desc">删除</string>
+    <string name="delete_done">已删除记录</string>
+    <string name="file_missing">文件不存在或已被移动</string>
+    <string name="no_app_to_handle">没有应用可处理此操作</string>
+    <string name="undo">撤销</string>
 </resources>

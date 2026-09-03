@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 旧版本（Android 8/9）直接文件路径下载的对外分享 -->
+    <external-path
+        name="music"
+        path="Music/" />
+</paths>

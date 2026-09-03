@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="nightBg">#0B0F1A</color>
-    <color name="surface">#141B2B</color>
-    <color name="surfaceVariant">#1C2537</color>
-    <color name="moonGold">#E8C878</color>
-    <color name="mintGreen">#6FD3A5</color>
-    <color name="textPrimary">#F2F4F8</color>
-    <color name="textSecondary">#8A93A6</color>
-    <color name="outline">#2A3450</color>
+    <!-- 亮色 -->
+    <color name="appBg">#F5F6FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surfaceVariant">#ECEDF2</color>
+    <color name="moonGold">#A8842C</color>
+    <color name="mintGreen">#2E9E6B</color>
+    <color name="textPrimary">#1A1F2E</color>
+    <color name="textSecondary">#667085</color>
+    <color name="outline">#D8DCE5</color>
     <color name="ic_launcher_bg">#0B0F1A</color>
 </resources>

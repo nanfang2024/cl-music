@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.yue.tool.app-mergeReleaseResources-33:/values-night-v8/values-night-v8.xml",
+            "outputFile": "/root/.gradle/daemon/8.14.5/com.yue.tool.app-mergeReleaseResources-33:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
                     "source": "/root/.gradle/caches/8.14.5/transforms/79b9dad4ae3825368117a4270bc7134d/transformed/material-1.12.0/res/values-night-v8/values-night-v8.xml",
@@ -35,6 +35,77 @@
                         "startOffsets": "55,125,209,293,389,491,593,3575",
                         "endColumns": "69,83,83,95,101,101,93,88",
                         "endOffsets": "120,204,288,384,486,588,682,3659"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.yue.tool.app-mergeReleaseResources-33:/values-night-v8/values-night-v8.xml",
+            "map": [
+                {
+                    "source": "/root/.gradle/caches/8.14.5/transforms/79b9dad4ae3825368117a4270bc7134d/transformed/material-1.12.0/res/values-night-v8/values-night-v8.xml",
+                    "from": {
+                        "startLines": "-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startColumns": "-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startOffsets": "-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"
+                    },
+                    "to": {
+                        "startLines": "18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,62,63,64,65,66,67,68,69",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "1090,1165,1276,1365,1466,1573,1680,1779,1886,1989,2116,2204,2328,2430,2532,2648,2750,2864,2992,3108,3230,3366,3486,3620,3740,3852,5090,5207,5331,5461,5583,5721,5855,5971",
+                        "endColumns": "74,110,88,100,106,106,98,106,102,126,87,123,101,101,115,101,113,127,115,121,135,119,133,119,111,125,116,123,129,121,137,133,115,119",
+                        "endOffsets": "1160,1271,1360,1461,1568,1675,1774,1881,1984,2111,2199,2323,2425,2527,2643,2745,2859,2987,3103,3225,3361,3481,3615,3735,3847,3973,5202,5326,5456,5578,5716,5850,5966,6086"
+                    }
+                },
+                {
+                    "source": "/workspace/yingyue/app/src/main/res/values-night/themes.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "18",
+                        "endColumns": "12",
+                        "endOffsets": "1073"
+                    },
+                    "to": {
+                        "startLines": "44",
+                        "startColumns": "4",
+                        "startOffsets": "3978",
+                        "endLines": "60",
+                        "endColumns": "12",
+                        "endOffsets": "4996"
+                    }
+                },
+                {
+                    "source": "/root/.gradle/caches/8.14.5/transforms/2515b1c297d284cbe5818727295f0bae/transformed/appcompat-1.7.0/res/values-night-v8/values-night-v8.xml",
+                    "from": {
+                        "startLines": "-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startColumns": "-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startOffsets": "-1,-1,-1,-1,-1,-1,-1,-1"
+                    },
+                    "to": {
+                        "startLines": "11,12,13,14,15,16,17,61",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "458,528,612,696,792,894,996,5001",
+                        "endColumns": "69,83,83,95,101,101,93,88",
+                        "endOffsets": "523,607,691,787,889,991,1085,5085"
+                    }
+                },
+                {
+                    "source": "/workspace/yingyue/app/src/main/res/values-night/colors.xml",
+                    "from": {
+                        "startLines": "3,11,7,6,10,4,5,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "71,425,245,202,383,111,153,289,335",
+                        "endColumns": "39,48,43,42,41,41,48,45,47",
+                        "endOffsets": "106,469,284,240,420,148,197,330,378"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,95,144,188,231,273,315,364,410",
+                        "endColumns": "39,48,43,42,41,41,48,45,47",
+                        "endOffsets": "90,139,183,226,268,310,359,405,453"
                     }
                 }
             ]

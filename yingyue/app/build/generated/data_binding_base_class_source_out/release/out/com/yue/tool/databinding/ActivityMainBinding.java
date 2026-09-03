@@ -4,18 +4,13 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.yue.tool.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -26,64 +21,16 @@ public final class ActivityMainBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final MaterialButton btnSearch;
+  public final BottomNavigationView bottomNav;
 
   @NonNull
-  public final Chip chipJoox;
+  public final FrameLayout fragmentContainer;
 
-  @NonNull
-  public final Chip chipNetease;
-
-  @NonNull
-  public final Chip chipQ128;
-
-  @NonNull
-  public final Chip chipQ192;
-
-  @NonNull
-  public final Chip chipQ320;
-
-  @NonNull
-  public final Chip chipQ740;
-
-  @NonNull
-  public final Chip chipQ999;
-
-  @NonNull
-  public final TextInputLayout editLayout;
-
-  @NonNull
-  public final TextInputEditText editQuery;
-
-  @NonNull
-  public final LinearProgressIndicator progress;
-
-  @NonNull
-  public final RecyclerView recycler;
-
-  @NonNull
-  public final TextView textEmpty;
-
-  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnSearch,
-      @NonNull Chip chipJoox, @NonNull Chip chipNetease, @NonNull Chip chipQ128,
-      @NonNull Chip chipQ192, @NonNull Chip chipQ320, @NonNull Chip chipQ740,
-      @NonNull Chip chipQ999, @NonNull TextInputLayout editLayout,
-      @NonNull TextInputEditText editQuery, @NonNull LinearProgressIndicator progress,
-      @NonNull RecyclerView recycler, @NonNull TextView textEmpty) {
+  private ActivityMainBinding(@NonNull LinearLayout rootView,
+      @NonNull BottomNavigationView bottomNav, @NonNull FrameLayout fragmentContainer) {
     this.rootView = rootView;
-    this.btnSearch = btnSearch;
-    this.chipJoox = chipJoox;
-    this.chipNetease = chipNetease;
-    this.chipQ128 = chipQ128;
-    this.chipQ192 = chipQ192;
-    this.chipQ320 = chipQ320;
-    this.chipQ740 = chipQ740;
-    this.chipQ999 = chipQ999;
-    this.editLayout = editLayout;
-    this.editQuery = editQuery;
-    this.progress = progress;
-    this.recycler = recycler;
-    this.textEmpty = textEmpty;
+    this.bottomNav = bottomNav;
+    this.fragmentContainer = fragmentContainer;
   }
 
   @Override
@@ -113,87 +60,19 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnSearch;
-      MaterialButton btnSearch = ViewBindings.findChildViewById(rootView, id);
-      if (btnSearch == null) {
+      id = R.id.bottomNav;
+      BottomNavigationView bottomNav = ViewBindings.findChildViewById(rootView, id);
+      if (bottomNav == null) {
         break missingId;
       }
 
-      id = R.id.chipJoox;
-      Chip chipJoox = ViewBindings.findChildViewById(rootView, id);
-      if (chipJoox == null) {
+      id = R.id.fragmentContainer;
+      FrameLayout fragmentContainer = ViewBindings.findChildViewById(rootView, id);
+      if (fragmentContainer == null) {
         break missingId;
       }
 
-      id = R.id.chipNetease;
-      Chip chipNetease = ViewBindings.findChildViewById(rootView, id);
-      if (chipNetease == null) {
-        break missingId;
-      }
-
-      id = R.id.chipQ128;
-      Chip chipQ128 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ128 == null) {
-        break missingId;
-      }
-
-      id = R.id.chipQ192;
-      Chip chipQ192 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ192 == null) {
-        break missingId;
-      }
-
-      id = R.id.chipQ320;
-      Chip chipQ320 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ320 == null) {
-        break missingId;
-      }
-
-      id = R.id.chipQ740;
-      Chip chipQ740 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ740 == null) {
-        break missingId;
-      }
-
-      id = R.id.chipQ999;
-      Chip chipQ999 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ999 == null) {
-        break missingId;
-      }
-
-      id = R.id.editLayout;
-      TextInputLayout editLayout = ViewBindings.findChildViewById(rootView, id);
-      if (editLayout == null) {
-        break missingId;
-      }
-
-      id = R.id.editQuery;
-      TextInputEditText editQuery = ViewBindings.findChildViewById(rootView, id);
-      if (editQuery == null) {
-        break missingId;
-      }
-
-      id = R.id.progress;
-      LinearProgressIndicator progress = ViewBindings.findChildViewById(rootView, id);
-      if (progress == null) {
-        break missingId;
-      }
-
-      id = R.id.recycler;
-      RecyclerView recycler = ViewBindings.findChildViewById(rootView, id);
-      if (recycler == null) {
-        break missingId;
-      }
-
-      id = R.id.textEmpty;
-      TextView textEmpty = ViewBindings.findChildViewById(rootView, id);
-      if (textEmpty == null) {
-        break missingId;
-      }
-
-      return new ActivityMainBinding((LinearLayout) rootView, btnSearch, chipJoox, chipNetease,
-          chipQ128, chipQ192, chipQ320, chipQ740, chipQ999, editLayout, editQuery, progress,
-          recycler, textEmpty);
+      return new ActivityMainBinding((LinearLayout) rootView, bottomNav, fragmentContainer);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

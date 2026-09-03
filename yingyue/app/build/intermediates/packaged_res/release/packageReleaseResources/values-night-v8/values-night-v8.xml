@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appBg">#0B0F1A</color>
+    <color name="ic_launcher_bg">#0B0F1A</color>
+    <color name="mintGreen">#6FD3A5</color>
+    <color name="moonGold">#E8C878</color>
+    <color name="outline">#2A3450</color>
+    <color name="surface">#141B2B</color>
+    <color name="surfaceVariant">#1C2537</color>
+    <color name="textPrimary">#F2F4F8</color>
+    <color name="textSecondary">#8A93A6</color>
+    <style name="Theme.YingYue" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/moonGold</item>
+        <item name="colorOnPrimary">#141408</item>
+        <item name="colorSecondary">@color/moonGold</item>
+        <item name="colorOnSecondary">#141408</item>
+        <item name="android:colorBackground">@color/appBg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/textSecondary</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="android:statusBarColor">@color/appBg</item>
+        <item name="android:navigationBarColor">@color/appBg</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorHint">@color/textSecondary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
