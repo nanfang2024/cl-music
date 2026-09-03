@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="appBg">#F5F6FA</color>
-    <color name="chipBg">#EEF0F6</color>
-    <color name="divider">#E8EAF0</color>
+    <color name="chipBg">#FFFFFF</color>
+    <color name="chipSelected">#B49CF1</color>
+    <color name="chipSelectedText">#FFFFFF</color>
+    <color name="chipStroke">#D8DBE2</color>
+    <color name="divider">#EEF0F4</color>
     <color name="jooxPill">#27AE60</color>
     <color name="kuwoPill">#8E44AD</color>
     <color name="launcherBg">#0B0F1A</color>
     <color name="moonGold">#A8842C</color>
+    <color name="moonGoldDark">#8E6E22</color>
+    <color name="navBg">#FAF6EC</color>
     <color name="navInactive">#9AA0AC</color>
     <color name="neteasePill">#C0392B</color>
+    <color name="sectionDivider">#E2E4EA</color>
+    <color name="sourcePillBg">#F5E9C8</color>
+    <color name="sourcePillText">#A8842C</color>
     <color name="surface">#FFFFFF</color>
     <color name="textPrimary">#1A1F2E</color>
     <color name="textSecondary">#6B7280</color>
+    <color name="textTertiary">#989DAA</color>
+    <string name="album_cover">专辑封面</string>
     <string name="app_name">映月</string>
+    <string name="app_slogan">歌如月色 · 顺手可得</string>
     <string name="btn_search">搜索</string>
     <string name="cancel">取消</string>
     <string name="channel_desc">获取更新与使用帮助</string>
@@ -30,6 +41,9 @@
     <string name="hint_keyword">请输入搜索关键词</string>
     <string name="hint_no_source">请至少选择一个音源</string>
     <string name="hint_search">输入歌名或歌手搜索</string>
+    <string name="hint_search_v121">歌名 / 歌手 / 专辑</string>
+    <string name="label_quality">音质</string>
+    <string name="label_source">音源</string>
     <string name="open_failed">打开失败</string>
     <string name="play_failed">播放失败</string>
     <string name="quality">音质</string>

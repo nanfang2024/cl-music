@@ -62,6 +62,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = TrackAdapter(
+            scope = viewLifecycleOwner.lifecycleScope,
             onDownload = { startDownload(it) },
             onPlay = { togglePlay(it) }
         )
@@ -122,6 +123,7 @@ class HomeFragment : Fragment() {
 
     private fun selectedQuality(): String = when (binding.qualityGroup.checkedChipId) {
         R.id.chipQuality128 -> "128k"
+        R.id.chipQuality192 -> "192k"
         R.id.chipQuality320 -> "320k"
         R.id.chipQuality740 -> "740k"
         else -> "999k"
