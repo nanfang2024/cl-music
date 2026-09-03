@@ -194,7 +194,7 @@ object MusicApi {
      * 获取封面 URL
      * - 芸朵：用 pic_id 调 types=pic 接口
      * - 库窝：搜索时已返回 picture 字段
-     * - 绿鹅：无封面，返回 null
+     * - 绿鹅：用 gdstudio 搜索同名歌曲获取 pic_id，再取封面
      */
     fun resolveCover(track: Track): String? {
         if (!track.coverUrl.isNullOrEmpty()) return track.coverUrl
@@ -202,6 +202,26 @@ object MusicApi {
             return try {
                 val url = "$GD_API?types=pic&source=netease&id=${enc(track.picId)}"
                 parse(get(url))?.get("url")?.takeIf { !it.isJsonNull }?.asString
+            } catch (_: Exception) {
+                null
+            }
+        }
+        if (track.source == "joox") {
+            return try {
+                // 用 gdstudio 搜索 JOOX 同名歌曲，获取 pic_id
+                val searchUrl = "$GD_API?types=search&source=joox&name=${enc(track.name + " " + track.artist)}&count=5&pages=1"
+                val arr = JsonParser.parseString(get(searchUrl)).asJsonArray
+                for (el in arr) {
+                    try {
+                        val o = el.asJsonObject
+                        val picId = o["pic_id"]?.takeIf { !it.isJsonNull }?.asString ?: continue
+                        val picUrl = "$GD_API?types=pic&source=joox&id=${enc(picId)}"
+                        val resolved = parse(get(picUrl))?.get("url")?.takeIf { !it.isJsonNull }?.asString
+                        if (!resolved.isNullOrEmpty()) return resolved
+                    } catch (_: Exception) {
+                    }
+                }
+                null
             } catch (_: Exception) {
                 null
             }

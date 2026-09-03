@@ -78,7 +78,19 @@ class TrackAdapter(
                     CoroutineScope(Dispatchers.IO).launch {
                         val coverUrl = runCatching { MusicApi.resolveCover(track) }.getOrNull()
                         withContext(Dispatchers.Main) {
-                            // 检查 view 是否还在显示同一首歌曲
+                            if (imageCover.tag == "pending:${track.id}" && coverUrl != null) {
+                                imageCover.tag = coverUrl
+                                ImageLoader.load(imageCover, coverUrl)
+                            }
+                        }
+                    }
+                }
+                track.source == "joox" -> {
+                    // 绿鹅：通过 gdstudio 搜索获取封面
+                    imageCover.setImageResource(R.drawable.ic_cover_placeholder)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val coverUrl = runCatching { MusicApi.resolveCover(track) }.getOrNull()
+                        withContext(Dispatchers.Main) {
                             if (imageCover.tag == "pending:${track.id}" && coverUrl != null) {
                                 imageCover.tag = coverUrl
                                 ImageLoader.load(imageCover, coverUrl)
