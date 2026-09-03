@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                 if (link.isNullOrEmpty()) throw IllegalStateException("该歌曲暂无 ${br}k 音质")
 
                 val displayName = Downloader.safeName("${track.artistLine} - ${track.name}")
+                val format = Downloader.formatFromUrl(link)
                 val uri = Downloader.download(this@MainActivity, link, displayName) { p ->
                     runOnUiThread {
                         if (p.percent >= 0) adapter.setState(urlId, DlState.Downloading(p.percent))
@@ -153,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 adapter.setState(urlId, DlState.Done)
                 Snackbar.make(
                     binding.root,
-                    "已保存到 Music/${Downloader.MUSIC_DIR}：${track.name}",
+                    "已保存 ${format.ext.uppercase()} · ${track.name}",
                     Snackbar.LENGTH_LONG
                 ).show()
             } catch (e: Exception) {

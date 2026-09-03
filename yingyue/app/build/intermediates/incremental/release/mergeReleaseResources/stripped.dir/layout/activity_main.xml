@@ -135,50 +135,62 @@
             android:textColor="@color/textSecondary"
             android:textSize="12sp" />
 
-        <com.google.android.material.chip.ChipGroup
+        <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:checkedChip="@id/chipQ999"
-            app:selectionRequired="true"
-            app:singleLine="true"
-            app:singleSelection="true">
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipQ128"
-                style="@style/Widget.Material3.Chip.Filter"
+            <com.google.android.material.chip.ChipGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="128k" />
+                app:checkedChip="@id/chipQ999"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipQ192"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="192k" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQ128"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="128k"
+                    android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipQ320"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="320k" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQ192"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="192k"
+                    android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipQ740"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="740k" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQ320"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="320k"
+                    android:textSize="12sp" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipQ999"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="999k" />
-        </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQ740"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="740k"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQ999"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="999k"
+                    android:textSize="12sp" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
     </LinearLayout>
 
     <View

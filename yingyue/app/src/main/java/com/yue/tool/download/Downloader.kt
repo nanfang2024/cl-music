@@ -38,6 +38,7 @@ object Downloader {
         displayName: String,
         onProgress: (Progress) -> Unit
     ): Uri = withContext(Dispatchers.IO) {
+        val format = formatFromUrl(url)
         val request = Request.Builder()
             .url(url)
             .header("User-Agent", "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36")
@@ -49,16 +50,31 @@ object Downloader {
             val total = body.contentLength()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                saveViaMediaStore(context, displayName, body.byteStream(), total, onProgress)
+                saveViaMediaStore(context, displayName, format, body.byteStream(), total, onProgress)
             } else {
-                saveLegacyFile(context, displayName, body.byteStream(), total, onProgress)
+                saveLegacyFile(context, displayName, format, body.byteStream(), total, onProgress)
             }
         }
+    }
+
+    data class AudioFormat(val ext: String, val mime: String)
+
+    /**
+     * 根据真实下载链接推断音频格式：
+     * 高音质（740k/999k）通常返回 flac / m4a，普通音质为 mp3
+     */
+    fun formatFromUrl(url: String): AudioFormat = when {
+        url.contains(".flac", ignoreCase = true) -> AudioFormat("flac", "audio/flac")
+        url.contains(".m4a", ignoreCase = true) -> AudioFormat("m4a", "audio/mp4")
+        url.contains(".ogg", ignoreCase = true) -> AudioFormat("ogg", "audio/ogg")
+        url.contains(".wav", ignoreCase = true) -> AudioFormat("wav", "audio/wav")
+        else -> AudioFormat("mp3", "audio/mpeg")
     }
 
     private fun saveViaMediaStore(
         context: Context,
         displayName: String,
+        format: AudioFormat,
         input: java.io.InputStream,
         total: Long,
         onProgress: (Progress) -> Unit
@@ -68,18 +84,18 @@ object Downloader {
         fun insertUri(name: String): Uri? {
             val values = ContentValues().apply {
                 put(MediaStore.Audio.Media.DISPLAY_NAME, name)
-                put("mime_type", "audio/mpeg") // MediaStore.MediaColumns.MIME_TYPE 的列名
+                put("mime_type", format.mime) // MediaStore.MediaColumns.MIME_TYPE 的列名
                 put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/" + MUSIC_DIR)
                 put(MediaStore.Audio.Media.IS_PENDING, 1)
             }
             return resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
         }
 
-        var name = "$displayName.mp3"
+        var name = "$displayName.${format.ext}"
         var uri = insertUri(name)
         var n = 1
         while (uri == null) {
-            name = "$displayName ($n).mp3"
+            name = "$displayName ($n).${format.ext}"
             uri = insertUri(name)
             n++
             if (n > 99) throw IOException("无法创建下载文件")
@@ -102,6 +118,7 @@ object Downloader {
     private fun saveLegacyFile(
         context: Context,
         displayName: String,
+        format: AudioFormat,
         input: java.io.InputStream,
         total: Long,
         onProgress: (Progress) -> Unit
@@ -112,17 +129,17 @@ object Downloader {
         )
         if (!dir.exists() && !dir.mkdirs()) throw IOException("无法创建目录 ${dir.absolutePath}")
 
-        var file = File(dir, "$displayName.mp3")
+        var file = File(dir, "$displayName.${format.ext}")
         var n = 1
         while (file.exists()) {
-            file = File(dir, "$displayName ($n).mp3")
+            file = File(dir, "$displayName ($n).${format.ext}")
             n++
         }
 
         file.outputStream().use { out -> copyStream(input, out, total, onProgress) }
 
         MediaScannerConnection.scanFile(
-            context, arrayOf(file.absolutePath), arrayOf("audio/mpeg"), null
+            context, arrayOf(file.absolutePath), arrayOf(format.mime), null
         )
         return Uri.fromFile(file)
     }
