@@ -14,6 +14,7 @@ data class Track(
     val artist: String,
     val album: String,
     val coverUrl: String?,
+    val picId: String? = null, // 芸朵的 pic_id，用于延迟获取封面
     val keyword: String,
     val index: Int,          // 在该音源搜索结果中的原始序号（1-based），用于详情接口按序取歌
     val searchPage: Int = 1  // 该结果来自第几页
@@ -115,6 +116,7 @@ object MusicApi {
                     artist = artist,
                     album = o["album"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     coverUrl = null,
+                    picId = o["pic_id"]?.takeIf { !it.isJsonNull }?.asString,
                     keyword = keyword,
                     index = out.size + 1,
                     searchPage = page
@@ -187,6 +189,25 @@ object MusicApi {
     }
 
     // ==================== 解析播放链接 ====================
+
+    /**
+     * 获取封面 URL
+     * - 芸朵：用 pic_id 调 types=pic 接口
+     * - 库窝：搜索时已返回 picture 字段
+     * - 绿鹅：无封面，返回 null
+     */
+    fun resolveCover(track: Track): String? {
+        if (!track.coverUrl.isNullOrEmpty()) return track.coverUrl
+        if (track.source == "netease" && !track.picId.isNullOrEmpty()) {
+            return try {
+                val url = "$GD_API?types=pic&source=netease&id=${enc(track.picId)}"
+                parse(get(url))?.get("url")?.takeIf { !it.isJsonNull }?.asString
+            } catch (_: Exception) {
+                null
+            }
+        }
+        return null
+    }
 
     /**
      * @param quality 音质档位：128k / 320k / 740k / 999k

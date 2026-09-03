@@ -7,8 +7,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yue.tool.R
+import com.yue.tool.api.MusicApi
 import com.yue.tool.api.Track
 import com.yue.tool.databinding.ItemTrackBinding
+import com.yue.tool.util.ImageLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TrackAdapter(
     private val onDownload: (Track) -> Unit,
@@ -61,9 +67,31 @@ class TrackAdapter(
             }
             textSource.setTextColor(ContextCompat.getColor(ctx, colorRes))
 
-            buttonPlay.setImageResource(
-                if (track.id == playingId) R.drawable.ic_stop else R.drawable.ic_play
-            )
+            // 封面图加载
+            imageCover.tag = track.coverUrl ?: "pending:${track.id}"
+            when {
+                !track.coverUrl.isNullOrEmpty() ->
+                    ImageLoader.load(imageCover, track.coverUrl)
+                track.source == "netease" && !track.picId.isNullOrEmpty() -> {
+                    // 芸朵需要额外请求封面 URL
+                    imageCover.setImageResource(R.drawable.ic_cover_placeholder)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val coverUrl = runCatching { MusicApi.resolveCover(track) }.getOrNull()
+                        withContext(Dispatchers.Main) {
+                            // 检查 view 是否还在显示同一首歌曲
+                            if (imageCover.tag == "pending:${track.id}" && coverUrl != null) {
+                                imageCover.tag = coverUrl
+                                ImageLoader.load(imageCover, coverUrl)
+                            }
+                        }
+                    }
+                }
+                else -> imageCover.setImageResource(R.drawable.ic_cover_placeholder)
+            }
+
+            // 播放/暂停按钮：▶ 和 ‖
+            val isPlaying = track.id == playingId
+            buttonPlay.text = if (isPlaying) "‖" else "▶"
             buttonPlay.setOnClickListener { onPlay(track) }
             buttonDownload.setOnClickListener { onDownload(track) }
         }

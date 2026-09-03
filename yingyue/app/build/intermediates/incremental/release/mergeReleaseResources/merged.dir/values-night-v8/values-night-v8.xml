@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="appBg">#0B0F1A</color>
+    <color name="cardBg">#1C2438</color>
     <color name="chipBg">#1C2438</color>
     <color name="divider">#232B40</color>
     <color name="jooxPill">#9DFFD9</color>

@@ -24,9 +24,6 @@ public final class ItemDownloadBinding implements ViewBinding {
   public final ImageButton buttonDelete;
 
   @NonNull
-  public final ImageButton buttonPlay;
-
-  @NonNull
   public final ImageButton buttonShare;
 
   @NonNull
@@ -45,12 +42,10 @@ public final class ItemDownloadBinding implements ViewBinding {
   public final TextView textTime;
 
   private ItemDownloadBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDelete,
-      @NonNull ImageButton buttonPlay, @NonNull ImageButton buttonShare,
-      @NonNull TextView textArtist, @NonNull TextView textFormat, @NonNull TextView textName,
-      @NonNull TextView textSource, @NonNull TextView textTime) {
+      @NonNull ImageButton buttonShare, @NonNull TextView textArtist, @NonNull TextView textFormat,
+      @NonNull TextView textName, @NonNull TextView textSource, @NonNull TextView textTime) {
     this.rootView = rootView;
     this.buttonDelete = buttonDelete;
-    this.buttonPlay = buttonPlay;
     this.buttonShare = buttonShare;
     this.textArtist = textArtist;
     this.textFormat = textFormat;
@@ -92,12 +87,6 @@ public final class ItemDownloadBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.buttonPlay;
-      ImageButton buttonPlay = ViewBindings.findChildViewById(rootView, id);
-      if (buttonPlay == null) {
-        break missingId;
-      }
-
       id = R.id.buttonShare;
       ImageButton buttonShare = ViewBindings.findChildViewById(rootView, id);
       if (buttonShare == null) {
@@ -134,8 +123,8 @@ public final class ItemDownloadBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemDownloadBinding((LinearLayout) rootView, buttonDelete, buttonPlay, buttonShare,
-          textArtist, textFormat, textName, textSource, textTime);
+      return new ItemDownloadBinding((LinearLayout) rootView, buttonDelete, buttonShare, textArtist,
+          textFormat, textName, textSource, textTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

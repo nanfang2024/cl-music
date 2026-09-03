@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -24,7 +25,10 @@ public final class ItemTrackBinding implements ViewBinding {
   public final ImageButton buttonDownload;
 
   @NonNull
-  public final ImageButton buttonPlay;
+  public final TextView buttonPlay;
+
+  @NonNull
+  public final ImageView imageCover;
 
   @NonNull
   public final TextView textArtist;
@@ -39,11 +43,12 @@ public final class ItemTrackBinding implements ViewBinding {
   public final TextView textSource;
 
   private ItemTrackBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDownload,
-      @NonNull ImageButton buttonPlay, @NonNull TextView textArtist, @NonNull TextView textIndex,
-      @NonNull TextView textName, @NonNull TextView textSource) {
+      @NonNull TextView buttonPlay, @NonNull ImageView imageCover, @NonNull TextView textArtist,
+      @NonNull TextView textIndex, @NonNull TextView textName, @NonNull TextView textSource) {
     this.rootView = rootView;
     this.buttonDownload = buttonDownload;
     this.buttonPlay = buttonPlay;
+    this.imageCover = imageCover;
     this.textArtist = textArtist;
     this.textIndex = textIndex;
     this.textName = textName;
@@ -84,8 +89,14 @@ public final class ItemTrackBinding implements ViewBinding {
       }
 
       id = R.id.buttonPlay;
-      ImageButton buttonPlay = ViewBindings.findChildViewById(rootView, id);
+      TextView buttonPlay = ViewBindings.findChildViewById(rootView, id);
       if (buttonPlay == null) {
+        break missingId;
+      }
+
+      id = R.id.imageCover;
+      ImageView imageCover = ViewBindings.findChildViewById(rootView, id);
+      if (imageCover == null) {
         break missingId;
       }
 
@@ -113,8 +124,8 @@ public final class ItemTrackBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemTrackBinding((LinearLayout) rootView, buttonDownload, buttonPlay, textArtist,
-          textIndex, textName, textSource);
+      return new ItemTrackBinding((LinearLayout) rootView, buttonDownload, buttonPlay, imageCover,
+          textArtist, textIndex, textName, textSource);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

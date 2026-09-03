@@ -1,6 +1,7 @@
 R_DEF: Internal format may change without notice
 local
 color appBg
+color cardBg
 color chipBg
 color divider
 color jooxPill
@@ -13,8 +14,10 @@ color neteasePill
 color surface
 color textPrimary
 color textSecondary
+drawable bg_cover
 drawable bg_input
 drawable bg_pill
+drawable ic_cover_placeholder
 drawable ic_delete
 drawable ic_download
 drawable ic_home
@@ -39,6 +42,7 @@ id chipQuality320
 id chipQuality740
 id chipQuality999
 id fragmentContainer
+id imageCover
 id inputKeyword
 id listDownloads
 id listTracks

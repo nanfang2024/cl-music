@@ -1,35 +1,11 @@
 [
     {
-        "merged": "com.yue.tool.app-release-38:/layout_item_download.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/item_download.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_play.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_play.xml"
-    },
-    {
         "merged": "com.yue.tool.app-release-38:/drawable_ic_download.xml.flat",
         "source": "com.yue.tool.app-main-39:/drawable/ic_download.xml"
     },
     {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_delete.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_delete.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/xml_file_paths.xml.flat",
-        "source": "com.yue.tool.app-main-39:/xml/file_paths.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/drawable_bg_input.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/bg_input.xml"
-    },
-    {
         "merged": "com.yue.tool.app-release-38:/drawable_ic_home.xml.flat",
         "source": "com.yue.tool.app-main-39:/drawable/ic_home.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/activity_main.xml"
     },
     {
         "merged": "com.yue.tool.app-release-38:/drawable_bg_pill.xml.flat",
@@ -38,14 +14,6 @@
     {
         "merged": "com.yue.tool.app-release-38:/drawable_ic_telegram.xml.flat",
         "source": "com.yue.tool.app-main-39:/drawable/ic_telegram.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/layout_item_track.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/item_track.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.yue.tool.app-main-39:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
         "merged": "com.yue.tool.app-release-38:/color_nav_item.xml.flat",
@@ -64,8 +32,56 @@
         "source": "com.yue.tool.app-main-39:/drawable/ic_stop.xml"
     },
     {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_cover_placeholder.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_cover_placeholder.xml"
+    },
+    {
         "merged": "com.yue.tool.app-release-38:/drawable_ic_share.xml.flat",
         "source": "com.yue.tool.app-main-39:/drawable/ic_share.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_settings.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_settings.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_fragment_home.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_item_download.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/item_download.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_bg_cover.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/bg_cover.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_play.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_play.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_ic_delete.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/ic_delete.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/xml_file_paths.xml.flat",
+        "source": "com.yue.tool.app-main-39:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/drawable_bg_input.xml.flat",
+        "source": "com.yue.tool.app-main-39:/drawable/bg_input.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_activity_main.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/layout_item_track.xml.flat",
+        "source": "com.yue.tool.app-main-39:/layout/item_track.xml"
+    },
+    {
+        "merged": "com.yue.tool.app-release-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.yue.tool.app-main-39:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
         "merged": "com.yue.tool.app-release-38:/layout_fragment_downloads.xml.flat",
@@ -78,13 +94,5 @@
     {
         "merged": "com.yue.tool.app-release-38:/drawable_ic_launcher_foreground.xml.flat",
         "source": "com.yue.tool.app-main-39:/drawable/ic_launcher_foreground.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/drawable_ic_settings.xml.flat",
-        "source": "com.yue.tool.app-main-39:/drawable/ic_settings.xml"
-    },
-    {
-        "merged": "com.yue.tool.app-release-38:/layout_fragment_home.xml.flat",
-        "source": "com.yue.tool.app-main-39:/layout/fragment_home.xml"
     }
 ]
