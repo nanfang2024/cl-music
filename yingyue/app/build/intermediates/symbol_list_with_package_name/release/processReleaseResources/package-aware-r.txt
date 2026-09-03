@@ -3372,6 +3372,7 @@ id position
 id postLayout
 id pressed
 id progress
+id progressSearch
 id progress_circular
 id progress_horizontal
 id qualityGroup
@@ -3469,6 +3470,7 @@ id textInfo
 id textName
 id textPathValue
 id textPercent
+id textPlayerBar
 id textSource
 id textSpacerNoButtons
 id textSpacerNoTitle
@@ -3778,6 +3780,7 @@ string clear_text_end_icon_content_description
 string confirm
 string delete_msg
 string delete_title
+string deleted
 string download
 string download_done
 string download_failed

@@ -3,9 +3,9 @@ package com.yue.tool.ui
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,12 +129,28 @@ class DownloadsFragment : Fragment() {
             .setTitle(getString(R.string.delete_title))
             .setMessage(getString(R.string.delete_msg, record.name))
             .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                // Major #10: 删除记录的同时删除文件
+                deleteFile(record)
                 DownloadHistory.remove(requireContext(), record)
                 adapter.remove(record)
                 if (adapter.itemCount == 0) binding.textEmpty.visibility = View.VISIBLE
+                toast(getString(R.string.deleted))
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
+    }
+
+    /** 删除实际文件（content URI 用 contentResolver，file URI 用 File.delete） */
+    private fun deleteFile(record: DownloadRecord) {
+        try {
+            val uri = Uri.parse(record.uri)
+            if (uri.scheme == "content") {
+                requireContext().contentResolver.delete(uri, null, null)
+            } else {
+                File(uri.path ?: return).takeIf { it.exists() }?.delete()
+            }
+        } catch (_: Exception) {
+        }
     }
 
     private fun mimeFor(format: String): String = when (format.lowercase()) {

@@ -1,5 +1,6 @@
 package com.yue.tool.ui
 
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -49,7 +50,14 @@ class DownloadHistoryAdapter(
         with(holder.binding) {
             textName.text = record.name
             textArtist.text = record.artist
-            textFormat.text = "${record.format.uppercase()} · ${record.quality}"
+            // Minor #15: 显示文件大小
+            val sizeText = if (record.size > 0)
+                Formatter.formatFileSize(ctx, record.size) else ""
+            textFormat.text = buildString {
+                append(record.format.uppercase())
+                append(" · ").append(record.quality)
+                if (sizeText.isNotEmpty()) append(" · ").append(sizeText)
+            }
             textTime.text = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                 .format(Date(record.time))
 

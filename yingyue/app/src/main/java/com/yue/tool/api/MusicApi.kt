@@ -1,6 +1,5 @@
 package com.yue.tool.api
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import okhttp3.OkHttpClient
@@ -16,7 +15,8 @@ data class Track(
     val album: String,
     val coverUrl: String?,
     val keyword: String,
-    val index: Int           // 搜索结果中的序号，绿鹅/库窝详情接口按序号取歌
+    val index: Int,          // 在该音源搜索结果中的原始序号（1-based），用于详情接口按序取歌
+    val searchPage: Int = 1  // 该结果来自第几页
 )
 
 data class ResolvedUrl(
@@ -49,7 +49,7 @@ object MusicApi {
 
     private fun get(url: String): String {
         client.newCall(Request.Builder().url(url).build()).execute().use { resp ->
-            if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}: $url")
+            if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}")
             return resp.body?.string() ?: ""
         }
     }
@@ -62,25 +62,36 @@ object MusicApi {
 
     // ==================== 搜索 ====================
 
-    fun search(keyword: String, sources: List<String>): List<Track> {
-        val out = mutableListOf<Track>()
+    /**
+     * @param keyword 搜索关键词
+     * @param sources 音源列表
+     * @param page 页码（1-based），每页 30 条
+     * @return 去重后的结果列表
+     */
+    fun search(keyword: String, sources: List<String>, page: Int = 1): List<Track> {
+        val raw = mutableListOf<Track>()
         for (src in sources) {
             try {
                 when (src) {
-                    "netease" -> out += searchNetease(keyword)
-                    "joox" -> out += searchJoox(keyword)
-                    "kuwo" -> out += searchKuwo(keyword)
+                    "netease" -> raw += searchNetease(keyword, page)
+                    "joox" -> raw += searchJoox(keyword, page)
+                    "kuwo" -> raw += searchKuwo(keyword, page)
                 }
             } catch (_: Exception) {
                 // 单个音源失败不影响其它音源
             }
         }
-        return out
+        // 跨音源去重：按 (name + artist) 判断，保留首次出现
+        val seen = mutableSetOf<String>()
+        return raw.filter { t ->
+            val key = (t.name.trim() + "|" + t.artist.trim()).lowercase()
+            seen.add(key)  // add 返回 false 表示已存在
+        }
     }
 
     /** 芸朵（网易云）：GD Studio */
-    private fun searchNetease(keyword: String): List<Track> {
-        val url = "$GD_API?types=search&source=netease&name=${enc(keyword)}&count=30&pages=1"
+    private fun searchNetease(keyword: String, page: Int): List<Track> {
+        val url = "$GD_API?types=search&source=netease&name=${enc(keyword)}&count=30&pages=$page"
         val arr = try {
             JsonParser.parseString(get(url)).asJsonArray
         } catch (e: Exception) {
@@ -94,7 +105,7 @@ object MusicApi {
                 val artist = when {
                     artistEl == null -> ""
                     artistEl.isJsonArray ->
-                        artistEl.asJsonArray.joinToString("/") { el -> el.asString }
+                        artistEl.asJsonArray.joinToString("/") { e -> e.asString }
                     else -> artistEl.asString
                 }
                 out += Track(
@@ -105,7 +116,8 @@ object MusicApi {
                     album = o["album"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     coverUrl = null,
                     keyword = keyword,
-                    index = out.size + 1
+                    index = out.size + 1,
+                    searchPage = page
                 )
             } catch (_: Exception) {
             }
@@ -114,7 +126,9 @@ object MusicApi {
     }
 
     /** 绿鹅（JOOX）：apicx.asia */
-    private fun searchJoox(keyword: String): List<Track> {
+    private fun searchJoox(keyword: String, page: Int): List<Track> {
+        // apicx.asia 接口不支持翻页，page>1 时直接返回空（避免重复结果）
+        if (page > 1) return emptyList()
         val url = "$JOOX_API?msg=${enc(keyword)}&token=$JOOX_TOKEN&br=4"
         val root = parse(get(url)) ?: return emptyList()
         if (root.get("code")?.asInt != 200) return emptyList()
@@ -125,6 +139,9 @@ object MusicApi {
                 val o = el.asJsonObject
                 val songMid = o.get("songmid")?.takeIf { !it.isJsonNull }?.asString ?: ""
                 val songId = o.get("歌曲ID")?.takeIf { !it.isJsonNull }?.asString ?: songMid
+                // 关键修复：index 使用遍历时的实际序号，不依赖 API 返回的"序号"字段
+                // 这样与详情接口的 n 参数严格对应
+                val seq = o.get("序号")?.takeIf { !it.isJsonNull }?.asInt ?: (out.size + 1)
                 out += Track(
                     id = songMid.ifEmpty { songId },
                     source = "joox",
@@ -133,7 +150,8 @@ object MusicApi {
                     album = o["专辑"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     coverUrl = null,
                     keyword = keyword,
-                    index = o.get("序号")?.takeIf { !it.isJsonNull }?.asInt ?: (out.size + 1)
+                    index = seq,
+                    searchPage = page
                 )
             } catch (_: Exception) {
             }
@@ -142,8 +160,8 @@ object MusicApi {
     }
 
     /** 库窝（酷我）：oiapi.net */
-    private fun searchKuwo(keyword: String): List<Track> {
-        val url = "$KUWO_API?msg=${enc(keyword)}&page=1&limit=30"
+    private fun searchKuwo(keyword: String, page: Int): List<Track> {
+        val url = "$KUWO_API?msg=${enc(keyword)}&page=$page&limit=30"
         val root = parse(get(url)) ?: return emptyList()
         val data = root.getAsJsonArray("data") ?: return emptyList()
         val out = mutableListOf<Track>()
@@ -159,7 +177,8 @@ object MusicApi {
                     album = o["album"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     coverUrl = o["picture"]?.takeIf { !it.isJsonNull }?.asString,
                     keyword = keyword,
-                    index = out.size + 1
+                    index = out.size + 1,
+                    searchPage = page
                 )
             } catch (_: Exception) {
             }
@@ -190,9 +209,9 @@ object MusicApi {
         }
         val url = "$GD_API?types=url&source=netease&id=${enc(track.id)}&br=$br"
         val root = parse(get(url))
-            ?: throw RuntimeException("芸朵音源解析失败")
+            ?: throw RuntimeException("芸朵音源解析失败：无响应")
         val playUrl = root.get("url")?.takeIf { !it.isJsonNull }?.asString
-            ?: throw RuntimeException("芸朵音源未返回链接")
+            ?: throw RuntimeException("芸朵音源未返回链接（可能无版权）")
         val fmt = formatFromUrl(playUrl)
         val actualBr = root.get("br")?.takeIf { !it.isJsonNull }?.asInt ?: 0
         val label = if (fmt.ext == "flac") "FLAC无损" else "${actualBr}k"
@@ -203,8 +222,9 @@ object MusicApi {
     private fun resolveJoox(track: Track, quality: String): ResolvedUrl {
         val url = "$JOOX_API?msg=${enc(track.keyword)}&n=${track.index}&token=$JOOX_TOKEN&br=4"
         val root = parse(get(url))
-            ?: throw RuntimeException("绿鹅音源解析失败")
-        if (root.get("code")?.asInt != 200) throw RuntimeException("绿鹅音源解析失败")
+            ?: throw RuntimeException("绿鹅音源解析失败：无响应")
+        if (root.get("code")?.asInt != 200)
+            throw RuntimeException("绿鹅音源解析失败：${root.get("msg") ?: "未知错误"}")
         val links = root.getAsJsonObject("data")?.getAsJsonObject("播放链接")
             ?: throw RuntimeException("绿鹅音源未返回播放链接")
 
@@ -214,9 +234,13 @@ object MusicApi {
             "320k" -> listOf("OGG 320", "MP3 320", "AAC 192", "OGG 192")
             else -> listOf("MP3 128", "OGG 192", "AAC 96", "AAC 48", "MP3 320")
         }
+        var lastError = "绿鹅音源所有音质链接均不可用"
         for (name in tiers) {
             val u = links.get(name)?.takeIf { !it.isJsonNull }?.asString ?: continue
-            if (!probeUrl(u)) continue
+            if (!probeUrl(u)) {
+                lastError = "绿鹅音源链接不可用：$name"
+                continue
+            }
             val fmt = formatFromUrl(u)
             val label = if (fmt.ext == "flac") {
                 if (name.contains("母带")) "母带无损" else "FLAC无损"
@@ -225,7 +249,7 @@ object MusicApi {
             }
             return ResolvedUrl(u, fmt.ext, fmt.mime, label)
         }
-        throw RuntimeException("绿鹅音源所有音质链接均不可用")
+        throw RuntimeException(lastError)
     }
 
     /** 库窝：br=7(128k) / 5(320k) / 1(flac) */
@@ -238,11 +262,11 @@ object MusicApi {
         }
         val url = "$KUWO_API?msg=${enc(track.keyword)}&n=${track.index}&br=$br"
         val root = parse(get(url))
-            ?: throw RuntimeException("库窝音源解析失败")
+            ?: throw RuntimeException("库窝音源解析失败：无响应")
         val data = root.getAsJsonObject("data")
-            ?: throw RuntimeException("库窝音源未返回数据")
+            ?: throw RuntimeException("库窝音源未返回数据：${root.get("msg") ?: "未知错误"}")
         val playUrl = data.get("url")?.takeIf { !it.isJsonNull }?.asString
-            ?: throw RuntimeException("库窝音源未返回链接")
+            ?: throw RuntimeException("库窝音源未返回链接（可能无版权）")
         val format = data.get("format")?.takeIf { !it.isJsonNull }?.asString ?: ""
         val bitrate = data.get("bitrate")?.takeIf { !it.isJsonNull }?.asString ?: ""
         val fmt = if (format.isNotEmpty()) {

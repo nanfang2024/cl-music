@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,7 +56,13 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final RecyclerView listTracks;
 
   @NonNull
+  public final ProgressBar progressSearch;
+
+  @NonNull
   public final ChipGroup qualityGroup;
+
+  @NonNull
+  public final TextView textPlayerBar;
 
   @NonNull
   public final TextView textStatus;
@@ -64,7 +71,8 @@ public final class FragmentHomeBinding implements ViewBinding {
       @NonNull Chip chipJoox, @NonNull Chip chipKuwo, @NonNull Chip chipNetease,
       @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
       @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
-      @NonNull RecyclerView listTracks, @NonNull ChipGroup qualityGroup,
+      @NonNull RecyclerView listTracks, @NonNull ProgressBar progressSearch,
+      @NonNull ChipGroup qualityGroup, @NonNull TextView textPlayerBar,
       @NonNull TextView textStatus) {
     this.rootView = rootView;
     this.btnSearch = btnSearch;
@@ -77,7 +85,9 @@ public final class FragmentHomeBinding implements ViewBinding {
     this.chipQuality999 = chipQuality999;
     this.inputKeyword = inputKeyword;
     this.listTracks = listTracks;
+    this.progressSearch = progressSearch;
     this.qualityGroup = qualityGroup;
+    this.textPlayerBar = textPlayerBar;
     this.textStatus = textStatus;
   }
 
@@ -168,9 +178,21 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.progressSearch;
+      ProgressBar progressSearch = ViewBindings.findChildViewById(rootView, id);
+      if (progressSearch == null) {
+        break missingId;
+      }
+
       id = R.id.qualityGroup;
       ChipGroup qualityGroup = ViewBindings.findChildViewById(rootView, id);
       if (qualityGroup == null) {
+        break missingId;
+      }
+
+      id = R.id.textPlayerBar;
+      TextView textPlayerBar = ViewBindings.findChildViewById(rootView, id);
+      if (textPlayerBar == null) {
         break missingId;
       }
 
@@ -182,7 +204,7 @@ public final class FragmentHomeBinding implements ViewBinding {
 
       return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
           chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
-          listTracks, qualityGroup, textStatus);
+          listTracks, progressSearch, qualityGroup, textPlayerBar, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

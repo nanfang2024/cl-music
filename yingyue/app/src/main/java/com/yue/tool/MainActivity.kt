@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemePrefs.apply(ThemePrefs.getMode(this))
+        // 主题已由 App.onCreate() 应用，无需在此重复调用
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

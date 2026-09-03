@@ -11,7 +11,8 @@ data class DownloadRecord(
     val format: String,      // flac / mp3 / m4a / ogg
     val quality: String,     // FLAC无损 / 320k / 128k
     val time: Long,          // 下载时间戳
-    val uri: String          // content:// 或 file://
+    val uri: String,         // content:// 或 file://
+    val size: Long = 0       // 文件大小（字节）
 )
 
 object DownloadHistory {

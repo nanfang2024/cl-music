@@ -3,28 +3,31 @@ package com.yue.tool.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yue.tool.R
 import com.yue.tool.api.Track
 import com.yue.tool.databinding.ItemTrackBinding
 
 class TrackAdapter(
-    private val tracks: MutableList<Track> = mutableListOf(),
     private val onDownload: (Track) -> Unit,
     private val onPlay: (Track) -> Unit
-) : RecyclerView.Adapter<TrackAdapter.Holder>() {
+) : ListAdapter<Track, TrackAdapter.Holder>(DIFF) {
 
     private var playingId: String? = null
 
-    fun submit(list: List<Track>) {
-        tracks.clear()
-        tracks.addAll(list)
-        notifyDataSetChanged()
-    }
-
     fun setPlaying(trackId: String?) {
+        val old = playingId
         playingId = trackId
-        notifyDataSetChanged()
+        if (old != null) {
+            val oldPos = currentList.indexOfFirst { it.id == old }
+            if (oldPos >= 0) notifyItemChanged(oldPos)
+        }
+        if (trackId != null) {
+            val newPos = currentList.indexOfFirst { it.id == trackId }
+            if (newPos >= 0) notifyItemChanged(newPos)
+        }
     }
 
     class Holder(val binding: ItemTrackBinding) : RecyclerView.ViewHolder(binding.root)
@@ -34,10 +37,8 @@ class TrackAdapter(
         return Holder(binding)
     }
 
-    override fun getItemCount(): Int = tracks.size
-
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val track = tracks[position]
+        val track = getItem(position)
         val ctx = holder.binding.root.context
         with(holder.binding) {
             textIndex.text = (position + 1).toString()
@@ -65,6 +66,15 @@ class TrackAdapter(
             )
             buttonPlay.setOnClickListener { onPlay(track) }
             buttonDownload.setOnClickListener { onDownload(track) }
+        }
+    }
+
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<Track>() {
+            override fun areItemsTheSame(a: Track, b: Track) =
+                a.id == b.id && a.source == b.source
+
+            override fun areContentsTheSame(a: Track, b: Track) = a == b
         }
     }
 }

@@ -24,19 +24,18 @@ object Downloader {
 
     /**
      * 下载音频文件到公共音乐目录（映月/）。
-     * @return 结果 Uri（Android 10+ 为 content://，以下为 file://）
+     * @return 下载结果（Android 10+ 为 content://，以下为 file://）
      */
     fun download(
         context: Context,
         track: Track,
         resolved: ResolvedUrl,
         listener: ProgressListener? = null
-    ): Uri {
+    ): DownloadResult {
         val fileName = sanitize("${track.name}-${track.artist}.${resolved.ext}")
         val client = MusicApi.client
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android 10+ 走 MediaStore
             val resolver = context.contentResolver
             val values = ContentValues().apply {
                 put(MediaStore.Audio.Media.DISPLAY_NAME, fileName)
@@ -48,12 +47,12 @@ object Downloader {
             val itemUri = resolver.insert(collection, values)
                 ?: throw RuntimeException("无法创建下载任务")
 
+            var read = 0L
             try {
                 client.newCall(Request.Builder().url(resolved.url).build()).execute().use { resp ->
                     if (!resp.isSuccessful) throw RuntimeException("下载失败: HTTP ${resp.code}")
                     val body = resp.body ?: throw RuntimeException("下载失败: 空响应")
                     val total = body.contentLength()
-                    var read = 0L
                     resolver.openOutputStream(itemUri)?.use { out: OutputStream ->
                         body.byteStream().use { input ->
                             val buf = ByteArray(64 * 1024)
@@ -78,16 +77,12 @@ object Downloader {
                 values.clear()
                 values.put(MediaStore.Audio.Media.IS_PENDING, 0)
                 resolver.update(itemUri, values, null, null)
-                return itemUri
+                return DownloadResult(itemUri, read)
             } catch (e: Exception) {
-                try {
-                    resolver.delete(itemUri, null, null)
-                } catch (_: Exception) {
-                }
+                try { resolver.delete(itemUri, null, null) } catch (_: Exception) {}
                 throw e
             }
         } else {
-            // Android 8/9 直接写公共目录
             val dir = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
                 DIR_NAME
@@ -95,11 +90,11 @@ object Downloader {
             if (!dir.exists()) dir.mkdirs()
             val file = File(dir, fileName)
 
+            var read = 0L
             client.newCall(Request.Builder().url(resolved.url).build()).execute().use { resp ->
                 if (!resp.isSuccessful) throw RuntimeException("下载失败: HTTP ${resp.code}")
                 val body = resp.body ?: throw RuntimeException("下载失败: 空响应")
                 val total = body.contentLength()
-                var read = 0L
                 FileOutputStream(file).use { out ->
                     body.byteStream().use { input ->
                         val buf = ByteArray(64 * 1024)
@@ -121,7 +116,7 @@ object Downloader {
                     }
                 }
             }
-            return Uri.fromFile(file)
+            return DownloadResult(Uri.fromFile(file), read)
         }
     }
 
@@ -129,3 +124,5 @@ object Downloader {
     fun sanitize(name: String): String =
         name.replace(Regex("[\\\\/:*?\"<>|]"), "").trim().take(120).ifEmpty { "audio" }
 }
+
+data class DownloadResult(val uri: Uri, val size: Long)

@@ -46,4 +46,5 @@
     <string name="delete_title">删除记录</string>
     <string name="delete_msg">确定删除「%1$s」的下载记录吗？</string>
     <string name="confirm">确定</string>
+    <string name="deleted">已删除</string>
 </resources>

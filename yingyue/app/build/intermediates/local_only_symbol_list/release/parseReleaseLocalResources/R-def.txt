@@ -46,6 +46,7 @@ id nav_downloads
 id nav_home
 id nav_settings
 id progress
+id progressSearch
 id qualityGroup
 id radioDark
 id radioLight
@@ -58,6 +59,7 @@ id textInfo
 id textName
 id textPathValue
 id textPercent
+id textPlayerBar
 id textSource
 id textStatus
 id textTime
@@ -78,6 +80,7 @@ string channel_desc
 string confirm
 string delete_msg
 string delete_title
+string deleted
 string download
 string download_done
 string download_failed
