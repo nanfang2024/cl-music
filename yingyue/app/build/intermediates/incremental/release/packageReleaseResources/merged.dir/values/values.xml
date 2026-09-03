@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appBg">#F5F6FA</color>
+    <color name="chipBg">#EEF0F6</color>
+    <color name="divider">#E8EAF0</color>
+    <color name="jooxPill">#27AE60</color>
+    <color name="kuwoPill">#8E44AD</color>
+    <color name="launcherBg">#0B0F1A</color>
+    <color name="moonGold">#A8842C</color>
+    <color name="navInactive">#9AA0AC</color>
+    <color name="neteasePill">#C0392B</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="textPrimary">#1A1F2E</color>
+    <color name="textSecondary">#6B7280</color>
+    <string name="app_name">映月</string>
+    <string name="btn_search">搜索</string>
+    <string name="cancel">取消</string>
+    <string name="channel_desc">获取更新与使用帮助</string>
+    <string name="confirm">确定</string>
+    <string name="delete_msg">确定删除「%1$s」的下载记录吗？</string>
+    <string name="delete_title">删除记录</string>
+    <string name="download">下载</string>
+    <string name="download_done">已下载（%1$s · %2$s）</string>
+    <string name="download_failed">下载失败，请重试</string>
+    <string name="downloading">下载中</string>
+    <string name="downloads_empty">暂无下载记录，去首页搜索下载吧</string>
+    <string name="downloads_title">下载列表</string>
+    <string name="file_missing">文件不存在或已移除</string>
+    <string name="hint_keyword">请输入搜索关键词</string>
+    <string name="hint_no_source">请至少选择一个音源</string>
+    <string name="hint_search">输入歌名或歌手搜索</string>
+    <string name="open_failed">打开失败</string>
+    <string name="play_failed">播放失败</string>
+    <string name="quality">音质</string>
+    <string name="resolve_failed">解析播放链接失败</string>
+    <string name="settings_channel">Telegram 频道</string>
+    <string name="settings_path">下载路径</string>
+    <string name="settings_theme">主题</string>
+    <string name="share_failed">分享失败</string>
+    <string name="share_to">分享到</string>
+    <string name="source_joox">绿鹅</string>
+    <string name="source_kuwo">库窝</string>
+    <string name="source_netease">芸朵</string>
+    <string name="status_empty">无搜索结果</string>
+    <string name="status_resolving">解析中</string>
+    <string name="status_result_count">共 %1$d 首</string>
+    <string name="status_search_failed">搜索失败，请重试</string>
+    <string name="status_searching">搜索中</string>
+    <string name="tab_downloads">下载</string>
+    <string name="tab_home">首页</string>
+    <string name="tab_settings">设置</string>
+    <string name="theme_dark">暗色</string>
+    <string name="theme_light">亮色</string>
+    <string name="theme_system">跟随系统</string>
+    <style name="PillText" parent="">
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="Theme.YingYue" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/moonGold</item>
+        <item name="android:colorBackground">@color/appBg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="android:statusBarColor">@color/appBg</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

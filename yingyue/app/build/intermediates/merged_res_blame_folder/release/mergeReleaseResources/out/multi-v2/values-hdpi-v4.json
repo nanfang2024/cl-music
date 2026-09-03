@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.yue.tool.app-mergeReleaseResources-36:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/root/.gradle/caches/8.14.5/transforms/e9beea1b91efe172957c7ddc57e8bb2d/transformed/appcompat-1.7.0/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appBg">#F5F6FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="moonGold">#A8842C</color>
+    <color name="textPrimary">#1A1F2E</color>
+    <color name="textSecondary">#6B7280</color>
+    <color name="divider">#E8EAF0</color>
+    <color name="chipBg">#EEF0F6</color>
+
+    <color name="neteasePill">#C0392B</color>
+    <color name="jooxPill">#27AE60</color>
+    <color name="kuwoPill">#8E44AD</color>
+
+    <color name="navInactive">#9AA0AC</color>
+    <color name="launcherBg">#0B0F1A</color>
+</resources>
