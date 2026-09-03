@@ -1290,10 +1290,6 @@ color cardview_light_background
 color cardview_shadow_end_color
 color cardview_shadow_start_color
 color chipBg
-color chipSelected
-color chipSelectedText
-color chipStroke
-color chip_text
 color design_bottom_navigation_shadow_color
 color design_box_stroke_color
 color design_dark_default_color_background
@@ -1946,7 +1942,6 @@ color material_timepicker_clock_text_color
 color material_timepicker_clockface
 color material_timepicker_modebutton_tint
 color moonGold
-color moonGoldDark
 color mtrl_btn_bg_color_selector
 color mtrl_btn_ripple_color
 color mtrl_btn_stroke_color_selector
@@ -2002,7 +1997,6 @@ color mtrl_textinput_disabled_color
 color mtrl_textinput_filled_box_default_background_color
 color mtrl_textinput_focused_box_stroke_color
 color mtrl_textinput_hovered_box_stroke_color
-color navBg
 color navInactive
 color nav_item
 color neteasePill
@@ -2022,9 +2016,6 @@ color secondary_text_default_material_dark
 color secondary_text_default_material_light
 color secondary_text_disabled_material_dark
 color secondary_text_disabled_material_light
-color sectionDivider
-color sourcePillBg
-color sourcePillText
 color surface
 color switch_thumb_disabled_material_dark
 color switch_thumb_disabled_material_light
@@ -2034,7 +2025,6 @@ color switch_thumb_normal_material_dark
 color switch_thumb_normal_material_light
 color textPrimary
 color textSecondary
-color textTertiary
 color tooltip_background_dark
 color tooltip_background_light
 dimen abc_action_bar_content_inset_material
@@ -2921,15 +2911,8 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
-drawable bg_btn_search
-drawable bg_chip
-drawable bg_chip_checked
-drawable bg_chip_normal
-drawable bg_cover_placeholder
 drawable bg_input
 drawable bg_pill
-drawable bg_search_input
-drawable bg_source_pill
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -2954,9 +2937,7 @@ drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_delete
 drawable ic_download
-drawable ic_download_down
 drawable ic_home
-drawable ic_home_house
 drawable ic_keyboard_black_24dp
 drawable ic_launcher_foreground
 drawable ic_m3_chip_check
@@ -2967,14 +2948,10 @@ drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_play
-drawable ic_play_tri
 drawable ic_search_black_24
-drawable ic_search_gold
 drawable ic_settings
-drawable ic_settings_gear
 drawable ic_share
 drawable ic_stop
-drawable ic_stop_square
 drawable ic_telegram
 drawable indeterminate_static
 drawable m3_avd_hide_password
@@ -3162,7 +3139,6 @@ id chipJoox
 id chipKuwo
 id chipNetease
 id chipQuality128
-id chipQuality192
 id chipQuality320
 id chipQuality740
 id chipQuality999
@@ -3263,7 +3239,6 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
-id imageCover
 id indeterminate
 id info
 id inputKeyword
@@ -3490,6 +3465,7 @@ id textArtist
 id textEmpty
 id textEnd
 id textFormat
+id textIndex
 id textInfo
 id textName
 id textPathValue
@@ -3778,10 +3754,8 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
-string album_cover
 string androidx_startup
 string app_name
-string app_slogan
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior
 string bottomsheet_action_collapse
@@ -3823,11 +3797,8 @@ string hide_bottom_view_on_scroll_behavior
 string hint_keyword
 string hint_no_source
 string hint_search
-string hint_search_v121
 string icon_content_description
 string item_view_role_description
-string label_quality
-string label_source
 string m3_exceed_max_badge_text_suffix
 string m3_ref_typeface_brand_medium
 string m3_ref_typeface_brand_regular

@@ -41,9 +41,6 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final Chip chipQuality128;
 
   @NonNull
-  public final Chip chipQuality192;
-
-  @NonNull
   public final Chip chipQuality320;
 
   @NonNull
@@ -72,8 +69,8 @@ public final class FragmentHomeBinding implements ViewBinding {
 
   private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull Button btnSearch,
       @NonNull Chip chipJoox, @NonNull Chip chipKuwo, @NonNull Chip chipNetease,
-      @NonNull Chip chipQuality128, @NonNull Chip chipQuality192, @NonNull Chip chipQuality320,
-      @NonNull Chip chipQuality740, @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
+      @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
+      @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
       @NonNull RecyclerView listTracks, @NonNull ProgressBar progressSearch,
       @NonNull ChipGroup qualityGroup, @NonNull TextView textPlayerBar,
       @NonNull TextView textStatus) {
@@ -83,7 +80,6 @@ public final class FragmentHomeBinding implements ViewBinding {
     this.chipKuwo = chipKuwo;
     this.chipNetease = chipNetease;
     this.chipQuality128 = chipQuality128;
-    this.chipQuality192 = chipQuality192;
     this.chipQuality320 = chipQuality320;
     this.chipQuality740 = chipQuality740;
     this.chipQuality999 = chipQuality999;
@@ -152,12 +148,6 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.chipQuality192;
-      Chip chipQuality192 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQuality192 == null) {
-        break missingId;
-      }
-
       id = R.id.chipQuality320;
       Chip chipQuality320 = ViewBindings.findChildViewById(rootView, id);
       if (chipQuality320 == null) {
@@ -213,9 +203,8 @@ public final class FragmentHomeBinding implements ViewBinding {
       }
 
       return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
-          chipNetease, chipQuality128, chipQuality192, chipQuality320, chipQuality740,
-          chipQuality999, inputKeyword, listTracks, progressSearch, qualityGroup, textPlayerBar,
-          textStatus);
+          chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
+          listTracks, progressSearch, qualityGroup, textPlayerBar, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

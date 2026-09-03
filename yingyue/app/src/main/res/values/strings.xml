@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">映月</string>
-    <string name="app_slogan">歌如月色 · 顺手可得</string>
 
     <string name="source_netease">芸朵</string>
     <string name="source_joox">绿鹅</string>
@@ -12,13 +11,9 @@
     <string name="tab_settings">设置</string>
 
     <string name="hint_search">输入歌名或歌手搜索</string>
-    <string name="hint_search_v121">歌名 / 歌手 / 专辑</string>
-    <string name="album_cover">专辑封面</string>
     <string name="btn_search">搜索</string>
     <string name="hint_keyword">请输入搜索关键词</string>
     <string name="hint_no_source">请至少选择一个音源</string>
-    <string name="label_source">音源</string>
-    <string name="label_quality">音质</string>
     <string name="status_searching">搜索中</string>
     <string name="status_search_failed">搜索失败，请重试</string>
     <string name="status_result_count">共 %1$d 首</string>

@@ -3,24 +3,10 @@
     <color name="appBg">#F5F6FA</color>
     <color name="surface">#FFFFFF</color>
     <color name="moonGold">#A8842C</color>
-    <!-- 搜索按钮的深金色（略深） -->
-    <color name="moonGoldDark">#8E6E22</color>
-    <!-- 芯片选中的淡紫色（参考 v1.2.1 芸朵选中色） -->
-    <color name="chipSelected">#B49CF1</color>
-    <color name="chipSelectedText">#FFFFFF</color>
-    <color name="chipBg">#FFFFFF</color>
-    <color name="chipStroke">#D8DBE2</color>
     <color name="textPrimary">#1A1F2E</color>
     <color name="textSecondary">#6B7280</color>
-    <color name="textTertiary">#989DAA</color>
-    <color name="divider">#EEF0F4</color>
-    <!-- 首页分隔线 -->
-    <color name="sectionDivider">#E2E4EA</color>
-    <!-- 底部导航浅米色背景 -->
-    <color name="navBg">#FAF6EC</color>
-    <!-- 音源 pill 的背景（截图里是浅米色） -->
-    <color name="sourcePillBg">#F5E9C8</color>
-    <color name="sourcePillText">#A8842C</color>
+    <color name="divider">#E8EAF0</color>
+    <color name="chipBg">#EEF0F6</color>
 
     <color name="neteasePill">#C0392B</color>
     <color name="jooxPill">#27AE60</color>

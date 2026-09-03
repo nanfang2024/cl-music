@@ -114,9 +114,7 @@ object MusicApi {
                     name = o["name"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     artist = artist,
                     album = o["album"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    coverUrl = o["pic"]?.takeIf { !it.isJsonNull }?.asString
-                        ?: o["pic_id"]?.takeIf { !it.isJsonNull }?.asString
-                        ?: o["cover"]?.takeIf { !it.isJsonNull }?.asString,
+                    coverUrl = null,
                     keyword = keyword,
                     index = out.size + 1,
                     searchPage = page
@@ -144,17 +142,13 @@ object MusicApi {
                 // 关键修复：index 使用遍历时的实际序号，不依赖 API 返回的"序号"字段
                 // 这样与详情接口的 n 参数严格对应
                 val seq = o.get("序号")?.takeIf { !it.isJsonNull }?.asInt ?: (out.size + 1)
-                val cover = listOf("封面", "封面图片", "cover", "album_img", "img600", "img300")
-                    .firstNotNullOfOrNull { key ->
-                        o.get(key)?.takeIf { !it.isJsonNull }?.asString?.takeIf { it.isNotEmpty() }
-                    }
                 out += Track(
                     id = songMid.ifEmpty { songId },
                     source = "joox",
                     name = o["歌曲名称"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     artist = o["歌手"]?.takeIf { !it.isJsonNull }?.asString ?: "",
                     album = o["专辑"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    coverUrl = cover,
+                    coverUrl = null,
                     keyword = keyword,
                     index = seq,
                     searchPage = page
@@ -205,11 +199,10 @@ object MusicApi {
         }
     }
 
-    /** 芸朵：types=url，br=128/192/320/740/999（192k 降级到 320k，GD 接口一般不支持 192） */
+    /** 芸朵：types=url，br=128/320/740/999 */
     private fun resolveNetease(track: Track, quality: String): ResolvedUrl {
         val br = when (quality) {
             "128k" -> "128"
-            "192k" -> "320"
             "320k" -> "320"
             "740k" -> "740"
             else -> "999"
@@ -239,7 +232,6 @@ object MusicApi {
             "999k" -> listOf("母带无损", "Hi-Res无损", "无损FLAC", "Atmos全景声")
             "740k" -> listOf("Hi-Res无损", "无损FLAC", "母带无损", "Atmos全景声")
             "320k" -> listOf("OGG 320", "MP3 320", "AAC 192", "OGG 192")
-            "192k" -> listOf("AAC 192", "OGG 192", "MP3 128", "MP3 320")
             else -> listOf("MP3 128", "OGG 192", "AAC 96", "AAC 48", "MP3 320")
         }
         var lastError = "绿鹅音源所有音质链接均不可用"
@@ -260,11 +252,10 @@ object MusicApi {
         throw RuntimeException(lastError)
     }
 
-    /** 库窝：br=7(128k) / 5(320k) / 1(flac)（192k 用 320k 降级） */
+    /** 库窝：br=7(128k) / 5(320k) / 1(flac) */
     private fun resolveKuwo(track: Track, quality: String): ResolvedUrl {
         val br = when (quality) {
             "128k" -> "7"
-            "192k" -> "5"
             "320k" -> "5"
             "740k" -> "1"
             else -> "1"
