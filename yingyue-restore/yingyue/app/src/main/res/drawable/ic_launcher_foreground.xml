@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 月亮 -->
+    <path
+        android:fillColor="#E8C878"
+        android:pathData="M54,28a26,26 0 1,0 0.001,52.001A30,30 0 0,1 54,28z" />
+    <!-- 下方音符 -->
+    <path
+        android:fillColor="#E8C878"
+        android:pathData="M70,52v16c0,2.8 -2.2,5 -5,5s-5,-2.2 -5,-5s2.2,-5 5,-5c0.7,0 1.4,0.15 2,0.42V54l-9,2.25V74c0,2.8 -2.2,5 -5,5s-5,-2.2 -5,-5s2.2,-5 5,-5c0.7,0 1.4,0.15 2,0.42V54L70,50z" />
+</vector>

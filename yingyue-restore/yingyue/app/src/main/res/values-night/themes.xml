@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.YingYue" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/moonGold</item>
+        <item name="android:colorBackground">@color/appBg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="android:statusBarColor">@color/appBg</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
