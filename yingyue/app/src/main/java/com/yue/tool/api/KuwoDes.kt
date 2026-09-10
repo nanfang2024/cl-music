@@ -1,15 +1,21 @@
 package com.yue.tool.api
 
+import java.io.ByteArrayOutputStream
+import java.nio.charset.Charset
 import java.util.Base64
+import java.util.zip.Inflater
 
 /**
  * 酷我自研 DES 变体（非标准 DES，S 盒与置换表均为定制），
- * 用于 mobi.s 播放链接解析接口的请求加密。
+ * 用于 mobi.s 播放链接解析接口的请求加密，以及歌词接口的 XOR 加解密。
  * 移植自 musicdl 项目 kuwoutils，已实测可用。
  */
 object KuwoDes {
 
     private const val KEY = "ylzsxkwm"
+
+    /** 歌词接口 XOR 密钥 */
+    private val LYRIC_KEY = "yeelion".toByteArray(Charsets.US_ASCII)
 
     private const val MASK32 = 0xFFFFFFFFL
     private const val MASK64 = -0x1L
@@ -190,5 +196,120 @@ object KuwoDes {
     fun encryptQuery(query: String): String {
         val ct = crypt(query.toByteArray(Charsets.UTF_8), KEY.toByteArray(Charsets.US_ASCII), 0)
         return Base64.getEncoder().encodeToString(ct)
+    }
+
+    // ---------- 歌词接口（newlyric.kuwo.cn） ----------
+
+    private fun xorCrypto(data: ByteArray, key: ByteArray): ByteArray {
+        val out = ByteArray(data.size)
+        for (i in data.indices) out[i] = (data[i].toInt() xor key[i % key.size].toInt()).toByte()
+        return out
+    }
+
+    /** 构造歌词请求参数：XOR 加密后 base64 */
+    fun buildLyricParams(musicId: String): String {
+        val params = "user=12345,web,web,web&requester=localhost&req=1&rid=MUSIC_$musicId&lrcx=1"
+        val buf = params.toByteArray(Charsets.UTF_8)
+        return Base64.getEncoder().encodeToString(xorCrypto(buf, LYRIC_KEY))
+    }
+
+    /** 解析歌词接口响应，返回 lrcx 明文 */
+    fun decodeLyrics(buf: ByteArray): String {
+        if (buf.size < 10 || !bytesStartWith(buf, "tp=content")) return ""
+        return try {
+            var split = -1
+            for (i in 0 until buf.size - 3) {
+                if (buf[i].toInt() == 13 && buf[i + 1].toInt() == 10 &&
+                    buf[i + 2].toInt() == 13 && buf[i + 3].toInt() == 10
+                ) { split = i; break }
+            }
+            if (split < 0) return ""
+            val start = split + 4
+            val inflated = inflate(buf.copyOfRange(start, buf.size))
+            val lrcB64 = String(inflated, Charsets.UTF_8)
+            val decrypted = xorCrypto(Base64.getDecoder().decode(lrcB64), LYRIC_KEY)
+            decodeCharset(decrypted)
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
+    /** 将 lrcx 增强格式转换为标准 LRC 文本 */
+    fun convertRawLrc(raw: String): String {
+        val out = StringBuilder()
+        val lines = Regex("\r\n|\r|\n").split(raw)
+        val lineRx = Regex("^\\[(\\d{2}:\\d{2}\\.\\d{3})](.*)$")
+        val wordRx = Regex("<(-?\\d+),(-?\\d+)>([^<]*)")
+        val zhRx = Regex("[\u4e00-\u9fa5]")
+        var i = 0
+        while (i < lines.size) {
+            val m = lineRx.matchEntire(lines[i])
+            if (m == null) {
+                if (lines[i].isNotEmpty()) out.append(lines[i]).append('\n')
+                i++
+                continue
+            }
+            val payload = m.groupValues[2]
+            if (payload.replace("<0,0>", "").isBlank()) { i++; continue }
+            if (payload.startsWith("<0,0>") && zhRx.containsMatchIn(payload)) { i++; continue }
+            var lyric = ""
+            var foundWord = false
+            for (wm in wordRx.findAll(payload)) {
+                foundWord = true
+                lyric += wm.groupValues[3]
+            }
+            if (!foundWord) lyric = payload.replace("<0,0>", "").trim()
+            var trans = ""
+            if (i + 1 < lines.size) {
+                val nm = lineRx.matchEntire(lines[i + 1])
+                if (nm != null) {
+                    val nextPayload = nm.groupValues[2]
+                    if (nextPayload.startsWith("<0,0>") && zhRx.containsMatchIn(nextPayload)) {
+                        trans = nextPayload.replace("<0,0>", "").trim()
+                        i++
+                    }
+                }
+            }
+            val ts = m.groupValues[1]
+            out.append("[$ts]").append(lyric).append('\n')
+            if (trans.isNotEmpty()) out.append("[$ts]").append(trans).append('\n')
+            i++
+        }
+        return out.toString().trim()
+    }
+
+    private fun bytesStartWith(buf: ByteArray, prefix: String): Boolean {
+        val p = prefix.toByteArray(Charsets.US_ASCII)
+        if (buf.size < p.size) return false
+        for (i in p.indices) if (buf[i].toInt() != p[i].toInt()) return false
+        return true
+    }
+
+    private fun inflate(data: ByteArray): ByteArray {
+        val inf = Inflater()
+        inf.setInput(data)
+        val out = ByteArrayOutputStream(1024)
+        try {
+            val buf = ByteArray(1024)
+            while (!inf.finished()) {
+                val n = inf.inflate(buf)
+                if (n <= 0) break
+                out.write(buf, 0, n)
+            }
+        } finally {
+            inf.end()
+        }
+        return out.toByteArray()
+    }
+
+    private fun decodeCharset(data: ByteArray): String {
+        val candidates = listOf("gb18030", "gbk", "utf-8")
+        for (name in candidates) {
+            try {
+                return String(data, Charset.forName(name))
+            } catch (_: Exception) {
+            }
+        }
+        return String(data, Charsets.UTF_8)
     }
 }

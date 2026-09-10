@@ -73,7 +73,7 @@ object PlayerManager {
     var onStateChange: ((trackId: String?, isPlaying: Boolean) -> Unit)? = null
 
     // 解析失败回调（HomeFragment 设置用于 toast）
-    var onResolveFail: (() -> Unit)? = null
+    var onResolveFail: ((String) -> Unit)? = null
 
     // ==================== 生命周期 ====================
 
@@ -134,7 +134,7 @@ object PlayerManager {
      * 开始播放一首歌
      * @param queue 搜索结果列表作为播放队列（用于上一首/下一首）
      */
-    fun startPlay(track: Track, queue: List<Track> = emptyList(), onFail: () -> Unit = {}) {
+    fun startPlay(track: Track, queue: List<Track> = emptyList(), onFail: (String) -> Unit = {}) {
         onResolveFail = onFail
 
         if (queue.isNotEmpty()) {
@@ -161,13 +161,19 @@ object PlayerManager {
         requestAudioFocus()
 
         resolveJob = CoroutineScope(Dispatchers.Main).launch {
+            var failMsg: String? = null
             val resolved = withContext(Dispatchers.IO) {
-                runCatching { MusicApi.resolveUrl(track, "128k") }.getOrNull()
+                try {
+                    MusicApi.resolveUrl(track, "128k")
+                } catch (e: Exception) {
+                    failMsg = e.message
+                    null
+                }
             }
             isResolving = false
             if (resolved == null) {
                 resetToIdle()
-                onResolveFail?.invoke()
+                onResolveFail?.invoke(failMsg ?: "解析播放链接失败")
                 return@launch
             }
             // 解析期间被新的 startPlay / stop 取代
@@ -199,14 +205,14 @@ object PlayerManager {
                 }
                 mp.setOnErrorListener { _, _, _ ->
                     resetToIdle()
-                    onResolveFail?.invoke()
+                    onResolveFail?.invoke("播放器加载失败")
                     true
                 }
                 player = mp
                 mp.prepareAsync()
             } catch (_: Exception) {
                 resetToIdle()
-                onResolveFail?.invoke()
+                onResolveFail?.invoke("播放器初始化失败")
             }
         }
     }

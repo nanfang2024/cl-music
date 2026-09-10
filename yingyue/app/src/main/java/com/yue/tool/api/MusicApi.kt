@@ -289,11 +289,33 @@ object MusicApi {
     }
 
     /**
-     * 获取歌词（LRC 原文）
+     * 获取歌词（标准 LRC 文本）
      * - 芸朵：直接用歌曲 id 调 types=lyric
-     * - 绿鹅/库窝：用 gdstudio 搜索同名歌曲拿 lyric_id，再取歌词
+     * - 库窝：优先官方 newlyric 接口，失败回退 gdstudio
+     * - 绿鹅：用 gdstudio 搜索同名歌曲拿 lyric_id，再取歌词
      */
     fun fetchLyric(track: Track): String? {
+        return when (track.source) {
+            "kuwo" -> fetchKuwoLyricOfficial(track) ?: fetchLyricViaGd(track)
+            "netease" -> fetchLyricViaGd(track)
+            else -> fetchLyricViaGd(track)
+        }
+    }
+
+    /** 库窝官方歌词接口：XOR 参数 → newlyric.lrc → 解压解密 → lrcx 转标准 LRC */
+    private fun fetchKuwoLyricOfficial(track: Track): String? {
+        return try {
+            val params = KuwoDes.buildLyricParams(track.id)
+            val body = getBytes("$KUWO_LYRIC?$params")
+            val raw = KuwoDes.decodeLyrics(body)
+            if (raw.isBlank()) null else KuwoDes.convertRawLrc(raw)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    /** 通过 gdstudio 搜索 lyric_id 并取歌词（库窝/绿鹅共用） */
+    private fun fetchLyricViaGd(track: Track): String? {
         return try {
             val lyricId: String = when (track.source) {
                 "netease" -> track.id

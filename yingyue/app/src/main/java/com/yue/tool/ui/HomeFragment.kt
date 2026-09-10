@@ -214,8 +214,8 @@ class HomeFragment : Fragment() {
         // 如果是当前播放的歌曲 → 切换播放/暂停
         if (PlayerManager.togglePlay(track)) return
         // 否则开始播放新歌（当前搜索结果作为播放队列，支持上一首/下一首）
-        PlayerManager.startPlay(track, tracks.toList()) {
-            toast(getString(R.string.resolve_failed))
+        PlayerManager.startPlay(track, tracks.toList()) { msg ->
+            toast(msg.ifBlank { getString(R.string.resolve_failed) })
         }
     }
 
