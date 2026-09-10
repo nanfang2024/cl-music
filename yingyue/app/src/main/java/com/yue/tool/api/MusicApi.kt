@@ -2,10 +2,15 @@ package com.yue.tool.api
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.ByteArrayOutputStream
 import java.net.URLEncoder
+import java.nio.charset.Charset
+import java.util.Base64
 import java.util.concurrent.TimeUnit
+import java.util.zip.Inflater
 
 data class Track(
     val id: String,
@@ -31,7 +36,7 @@ data class ResolvedUrl(
  * 三音源聚合：
  * - 芸朵（netease）：GD Studio 音乐台 API
  * - 绿鹅（joox）：apicx.asia JOOX 接口（参考 musicsquare 项目）
- * - 库窝（kuwo）：oiapi.net 酷我接口（参考 musicsquare 项目）
+ * - 库窝（kuwo）：酷我官方接口为主 + 第三方兜底（参考 musicdl 项目）
  */
 object MusicApi {
 
@@ -39,6 +44,11 @@ object MusicApi {
     private const val JOOX_API = "https://apicx.asia/api/joox_music"
     private const val JOOX_TOKEN = "f84ao9lMF_q7husBWRfgUw"
     private const val KUWO_API = "https://oiapi.net/api/Kuwo"
+    private const val KUWO_SEARCH = "https://www.kuwo.cn/search/searchMusicBykeyWord"
+    private const val KUWO_MOBI = "https://mobi.kuwo.cn/mobi.s"
+    private const val KUWO_LYRIC = "https://newlyric.kuwo.cn/newlyric.lrc"
+    private const val KUWO_UA =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
 
     val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -48,10 +58,19 @@ object MusicApi {
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8")
 
-    private fun get(url: String): String {
-        client.newCall(Request.Builder().url(url).build()).execute().use { resp ->
+    private fun get(url: String, headers: Map<String, String> = emptyMap()): String {
+        val builder = Request.Builder().url(url)
+        headers.forEach { (k, v) -> builder.header(k, v) }
+        client.newCall(builder.build()).execute().use { resp ->
             if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}")
             return resp.body?.string() ?: ""
+        }
+    }
+
+    private fun getBytes(url: String): ByteArray {
+        client.newCall(Request.Builder().url(url).build()).execute().use { resp ->
+            if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}")
+            return resp.body?.bytes() ?: ByteArray(0)
         }
     }
 
@@ -161,8 +180,48 @@ object MusicApi {
         return out
     }
 
-    /** 库窝（酷我）：oiapi.net */
+    /** 库窝（酷我）：官方搜索为主，oiapi.net 兜底 */
     private fun searchKuwo(keyword: String, page: Int): List<Track> {
+        return try {
+            searchKuwoOfficial(keyword, page)
+        } catch (e: Exception) {
+            searchKuwoOiapi(keyword, page)
+        }
+    }
+
+    /** 酷我官方搜索接口 */
+    private fun searchKuwoOfficial(keyword: String, page: Int): List<Track> {
+        val url = "$KUWO_SEARCH?vipver=1&client=kt&ft=music&cluster=0&strategy=2012" +
+                "&encoding=utf8&rformat=json&mobi=1&issubtitle=1&show_copyright_off=1" +
+                "&pn=${page - 1}&rn=30&all=${enc(keyword)}"
+        val root = parse(get(url, mapOf("User-Agent" to KUWO_UA)))
+            ?: throw RuntimeException("库窝官方搜索无响应")
+        val data = root.getAsJsonArray("abslist") ?: return emptyList()
+        val out = mutableListOf<Track>()
+        data.forEach { el ->
+            try {
+                val o = el.asJsonObject
+                val rid = o["MUSICRID"]?.takeIf { !it.isJsonNull }?.asString
+                    ?.removePrefix("MUSIC_") ?: return@forEach
+                out += Track(
+                    id = rid,
+                    source = "kuwo",
+                    name = o["SONGNAME"]?.takeIf { !it.isJsonNull }?.asString ?: "",
+                    artist = o["ARTIST"]?.takeIf { !it.isJsonNull }?.asString ?: "",
+                    album = o["ALBUM"]?.takeIf { !it.isJsonNull }?.asString ?: "",
+                    coverUrl = o["hts_MVPIC"]?.takeIf { !it.isJsonNull }?.asString,
+                    keyword = keyword,
+                    index = out.size + 1,
+                    searchPage = page
+                )
+            } catch (_: Exception) {
+            }
+        }
+        return out
+    }
+
+    /** oiapi.net 搜索（兜底） */
+    private fun searchKuwoOiapi(keyword: String, page: Int): List<Track> {
         val url = "$KUWO_API?msg=${enc(keyword)}&page=$page&limit=30"
         val root = parse(get(url)) ?: return emptyList()
         val data = root.getAsJsonArray("data") ?: return emptyList()
