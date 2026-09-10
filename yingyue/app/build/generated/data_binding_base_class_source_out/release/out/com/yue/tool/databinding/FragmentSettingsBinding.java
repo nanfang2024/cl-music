@@ -4,14 +4,15 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.google.android.material.card.MaterialCardView;
 import com.yue.tool.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -22,10 +23,7 @@ public final class FragmentSettingsBinding implements ViewBinding {
   private final ScrollView rootView;
 
   @NonNull
-  public final LinearLayout cardTelegram;
-
-  @NonNull
-  public final RadioGroup groupTheme;
+  public final MaterialCardView cardTelegram;
 
   @NonNull
   public final RadioButton radioDark;
@@ -36,15 +34,23 @@ public final class FragmentSettingsBinding implements ViewBinding {
   @NonNull
   public final RadioButton radioSystem;
 
-  private FragmentSettingsBinding(@NonNull ScrollView rootView, @NonNull LinearLayout cardTelegram,
-      @NonNull RadioGroup groupTheme, @NonNull RadioButton radioDark,
-      @NonNull RadioButton radioLight, @NonNull RadioButton radioSystem) {
+  @NonNull
+  public final TextView textPathValue;
+
+  @NonNull
+  public final RadioGroup themeGroup;
+
+  private FragmentSettingsBinding(@NonNull ScrollView rootView,
+      @NonNull MaterialCardView cardTelegram, @NonNull RadioButton radioDark,
+      @NonNull RadioButton radioLight, @NonNull RadioButton radioSystem,
+      @NonNull TextView textPathValue, @NonNull RadioGroup themeGroup) {
     this.rootView = rootView;
     this.cardTelegram = cardTelegram;
-    this.groupTheme = groupTheme;
     this.radioDark = radioDark;
     this.radioLight = radioLight;
     this.radioSystem = radioSystem;
+    this.textPathValue = textPathValue;
+    this.themeGroup = themeGroup;
   }
 
   @Override
@@ -75,14 +81,8 @@ public final class FragmentSettingsBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.cardTelegram;
-      LinearLayout cardTelegram = ViewBindings.findChildViewById(rootView, id);
+      MaterialCardView cardTelegram = ViewBindings.findChildViewById(rootView, id);
       if (cardTelegram == null) {
-        break missingId;
-      }
-
-      id = R.id.groupTheme;
-      RadioGroup groupTheme = ViewBindings.findChildViewById(rootView, id);
-      if (groupTheme == null) {
         break missingId;
       }
 
@@ -104,8 +104,20 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentSettingsBinding((ScrollView) rootView, cardTelegram, groupTheme, radioDark,
-          radioLight, radioSystem);
+      id = R.id.textPathValue;
+      TextView textPathValue = ViewBindings.findChildViewById(rootView, id);
+      if (textPathValue == null) {
+        break missingId;
+      }
+
+      id = R.id.themeGroup;
+      RadioGroup themeGroup = ViewBindings.findChildViewById(rootView, id);
+      if (themeGroup == null) {
+        break missingId;
+      }
+
+      return new FragmentSettingsBinding((ScrollView) rootView, cardTelegram, radioDark, radioLight,
+          radioSystem, textPathValue, themeGroup);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

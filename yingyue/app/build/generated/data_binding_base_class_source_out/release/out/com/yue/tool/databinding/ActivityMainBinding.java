@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -18,7 +21,7 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
   @NonNull
   public final BottomNavigationView bottomNav;
@@ -26,16 +29,51 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final FrameLayout fragmentContainer;
 
-  private ActivityMainBinding(@NonNull LinearLayout rootView,
-      @NonNull BottomNavigationView bottomNav, @NonNull FrameLayout fragmentContainer) {
+  @NonNull
+  public final TextView miniArtist;
+
+  @NonNull
+  public final TextView miniBtnPlay;
+
+  @NonNull
+  public final TextView miniBtnStop;
+
+  @NonNull
+  public final ImageView miniCover;
+
+  @NonNull
+  public final TextView miniName;
+
+  @NonNull
+  public final LinearLayout miniPlayer;
+
+  @NonNull
+  public final ProgressBar miniProgress;
+
+  @NonNull
+  public final FrameLayout playerOverlay;
+
+  private ActivityMainBinding(@NonNull FrameLayout rootView,
+      @NonNull BottomNavigationView bottomNav, @NonNull FrameLayout fragmentContainer,
+      @NonNull TextView miniArtist, @NonNull TextView miniBtnPlay, @NonNull TextView miniBtnStop,
+      @NonNull ImageView miniCover, @NonNull TextView miniName, @NonNull LinearLayout miniPlayer,
+      @NonNull ProgressBar miniProgress, @NonNull FrameLayout playerOverlay) {
     this.rootView = rootView;
     this.bottomNav = bottomNav;
     this.fragmentContainer = fragmentContainer;
+    this.miniArtist = miniArtist;
+    this.miniBtnPlay = miniBtnPlay;
+    this.miniBtnStop = miniBtnStop;
+    this.miniCover = miniCover;
+    this.miniName = miniName;
+    this.miniPlayer = miniPlayer;
+    this.miniProgress = miniProgress;
+    this.playerOverlay = playerOverlay;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -72,7 +110,57 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, bottomNav, fragmentContainer);
+      id = R.id.miniArtist;
+      TextView miniArtist = ViewBindings.findChildViewById(rootView, id);
+      if (miniArtist == null) {
+        break missingId;
+      }
+
+      id = R.id.miniBtnPlay;
+      TextView miniBtnPlay = ViewBindings.findChildViewById(rootView, id);
+      if (miniBtnPlay == null) {
+        break missingId;
+      }
+
+      id = R.id.miniBtnStop;
+      TextView miniBtnStop = ViewBindings.findChildViewById(rootView, id);
+      if (miniBtnStop == null) {
+        break missingId;
+      }
+
+      id = R.id.miniCover;
+      ImageView miniCover = ViewBindings.findChildViewById(rootView, id);
+      if (miniCover == null) {
+        break missingId;
+      }
+
+      id = R.id.miniName;
+      TextView miniName = ViewBindings.findChildViewById(rootView, id);
+      if (miniName == null) {
+        break missingId;
+      }
+
+      id = R.id.miniPlayer;
+      LinearLayout miniPlayer = ViewBindings.findChildViewById(rootView, id);
+      if (miniPlayer == null) {
+        break missingId;
+      }
+
+      id = R.id.miniProgress;
+      ProgressBar miniProgress = ViewBindings.findChildViewById(rootView, id);
+      if (miniProgress == null) {
+        break missingId;
+      }
+
+      id = R.id.playerOverlay;
+      FrameLayout playerOverlay = ViewBindings.findChildViewById(rootView, id);
+      if (playerOverlay == null) {
+        break missingId;
+      }
+
+      return new ActivityMainBinding((FrameLayout) rootView, bottomNav, fragmentContainer,
+          miniArtist, miniBtnPlay, miniBtnStop, miniCover, miniName, miniPlayer, miniProgress,
+          playerOverlay);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

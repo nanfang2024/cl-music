@@ -4,18 +4,18 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.chip.ChipGroup;
 import com.yue.tool.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -26,64 +26,69 @@ public final class FragmentHomeBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final MaterialButton btnSearch;
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipJoox;
 
   @NonNull
+  public final Chip chipKuwo;
+
+  @NonNull
   public final Chip chipNetease;
 
   @NonNull
-  public final Chip chipQ128;
+  public final Chip chipQuality128;
 
   @NonNull
-  public final Chip chipQ192;
+  public final Chip chipQuality320;
 
   @NonNull
-  public final Chip chipQ320;
+  public final Chip chipQuality740;
 
   @NonNull
-  public final Chip chipQ740;
+  public final Chip chipQuality999;
 
   @NonNull
-  public final Chip chipQ999;
+  public final EditText inputKeyword;
 
   @NonNull
-  public final TextInputLayout editLayout;
+  public final LinearLayout layoutEmpty;
 
   @NonNull
-  public final TextInputEditText editQuery;
+  public final RecyclerView listTracks;
 
   @NonNull
-  public final LinearProgressIndicator progress;
+  public final ProgressBar progressSearch;
 
   @NonNull
-  public final RecyclerView recycler;
+  public final ChipGroup qualityGroup;
 
   @NonNull
-  public final TextView textEmpty;
+  public final TextView textStatus;
 
-  private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnSearch,
-      @NonNull Chip chipJoox, @NonNull Chip chipNetease, @NonNull Chip chipQ128,
-      @NonNull Chip chipQ192, @NonNull Chip chipQ320, @NonNull Chip chipQ740,
-      @NonNull Chip chipQ999, @NonNull TextInputLayout editLayout,
-      @NonNull TextInputEditText editQuery, @NonNull LinearProgressIndicator progress,
-      @NonNull RecyclerView recycler, @NonNull TextView textEmpty) {
+  private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnSearch,
+      @NonNull Chip chipJoox, @NonNull Chip chipKuwo, @NonNull Chip chipNetease,
+      @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
+      @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
+      @NonNull LinearLayout layoutEmpty, @NonNull RecyclerView listTracks,
+      @NonNull ProgressBar progressSearch, @NonNull ChipGroup qualityGroup,
+      @NonNull TextView textStatus) {
     this.rootView = rootView;
     this.btnSearch = btnSearch;
     this.chipJoox = chipJoox;
+    this.chipKuwo = chipKuwo;
     this.chipNetease = chipNetease;
-    this.chipQ128 = chipQ128;
-    this.chipQ192 = chipQ192;
-    this.chipQ320 = chipQ320;
-    this.chipQ740 = chipQ740;
-    this.chipQ999 = chipQ999;
-    this.editLayout = editLayout;
-    this.editQuery = editQuery;
-    this.progress = progress;
-    this.recycler = recycler;
-    this.textEmpty = textEmpty;
+    this.chipQuality128 = chipQuality128;
+    this.chipQuality320 = chipQuality320;
+    this.chipQuality740 = chipQuality740;
+    this.chipQuality999 = chipQuality999;
+    this.inputKeyword = inputKeyword;
+    this.layoutEmpty = layoutEmpty;
+    this.listTracks = listTracks;
+    this.progressSearch = progressSearch;
+    this.qualityGroup = qualityGroup;
+    this.textStatus = textStatus;
   }
 
   @Override
@@ -114,7 +119,7 @@ public final class FragmentHomeBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.btnSearch;
-      MaterialButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
       if (btnSearch == null) {
         break missingId;
       }
@@ -125,75 +130,81 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.chipKuwo;
+      Chip chipKuwo = ViewBindings.findChildViewById(rootView, id);
+      if (chipKuwo == null) {
+        break missingId;
+      }
+
       id = R.id.chipNetease;
       Chip chipNetease = ViewBindings.findChildViewById(rootView, id);
       if (chipNetease == null) {
         break missingId;
       }
 
-      id = R.id.chipQ128;
-      Chip chipQ128 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ128 == null) {
+      id = R.id.chipQuality128;
+      Chip chipQuality128 = ViewBindings.findChildViewById(rootView, id);
+      if (chipQuality128 == null) {
         break missingId;
       }
 
-      id = R.id.chipQ192;
-      Chip chipQ192 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ192 == null) {
+      id = R.id.chipQuality320;
+      Chip chipQuality320 = ViewBindings.findChildViewById(rootView, id);
+      if (chipQuality320 == null) {
         break missingId;
       }
 
-      id = R.id.chipQ320;
-      Chip chipQ320 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ320 == null) {
+      id = R.id.chipQuality740;
+      Chip chipQuality740 = ViewBindings.findChildViewById(rootView, id);
+      if (chipQuality740 == null) {
         break missingId;
       }
 
-      id = R.id.chipQ740;
-      Chip chipQ740 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ740 == null) {
+      id = R.id.chipQuality999;
+      Chip chipQuality999 = ViewBindings.findChildViewById(rootView, id);
+      if (chipQuality999 == null) {
         break missingId;
       }
 
-      id = R.id.chipQ999;
-      Chip chipQ999 = ViewBindings.findChildViewById(rootView, id);
-      if (chipQ999 == null) {
+      id = R.id.inputKeyword;
+      EditText inputKeyword = ViewBindings.findChildViewById(rootView, id);
+      if (inputKeyword == null) {
         break missingId;
       }
 
-      id = R.id.editLayout;
-      TextInputLayout editLayout = ViewBindings.findChildViewById(rootView, id);
-      if (editLayout == null) {
+      id = R.id.layoutEmpty;
+      LinearLayout layoutEmpty = ViewBindings.findChildViewById(rootView, id);
+      if (layoutEmpty == null) {
         break missingId;
       }
 
-      id = R.id.editQuery;
-      TextInputEditText editQuery = ViewBindings.findChildViewById(rootView, id);
-      if (editQuery == null) {
+      id = R.id.listTracks;
+      RecyclerView listTracks = ViewBindings.findChildViewById(rootView, id);
+      if (listTracks == null) {
         break missingId;
       }
 
-      id = R.id.progress;
-      LinearProgressIndicator progress = ViewBindings.findChildViewById(rootView, id);
-      if (progress == null) {
+      id = R.id.progressSearch;
+      ProgressBar progressSearch = ViewBindings.findChildViewById(rootView, id);
+      if (progressSearch == null) {
         break missingId;
       }
 
-      id = R.id.recycler;
-      RecyclerView recycler = ViewBindings.findChildViewById(rootView, id);
-      if (recycler == null) {
+      id = R.id.qualityGroup;
+      ChipGroup qualityGroup = ViewBindings.findChildViewById(rootView, id);
+      if (qualityGroup == null) {
         break missingId;
       }
 
-      id = R.id.textEmpty;
-      TextView textEmpty = ViewBindings.findChildViewById(rootView, id);
-      if (textEmpty == null) {
+      id = R.id.textStatus;
+      TextView textStatus = ViewBindings.findChildViewById(rootView, id);
+      if (textStatus == null) {
         break missingId;
       }
 
-      return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipNetease,
-          chipQ128, chipQ192, chipQ320, chipQ740, chipQ999, editLayout, editQuery, progress,
-          recycler, textEmpty);
+      return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
+          chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
+          layoutEmpty, listTracks, progressSearch, qualityGroup, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

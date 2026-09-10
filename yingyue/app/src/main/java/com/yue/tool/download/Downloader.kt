@@ -2,168 +2,127 @@ package com.yue.tool.download
 
 import android.content.ContentValues
 import android.content.Context
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
+import com.yue.tool.api.MusicApi
+import com.yue.tool.api.ResolvedUrl
+import com.yue.tool.api.Track
 import okhttp3.Request
 import java.io.File
-import java.io.IOException
-import java.util.concurrent.TimeUnit
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 object Downloader {
 
-    const val MUSIC_DIR = "映月"
+    const val DIR_NAME = "映月"
 
-    data class Progress(val percent: Int, val received: Long, val total: Long)
-
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .build()
-
-    fun safeName(raw: String): String =
-        raw.replace(Regex("[\\\\/:*?\"<>|\\r\\n\\t]"), "_")
-            .trim()
-            .take(80)
-            .ifEmpty { "未命名" }
-
-    suspend fun download(
-        context: Context,
-        url: String,
-        displayName: String,
-        onProgress: (Progress) -> Unit
-    ): Uri = withContext(Dispatchers.IO) {
-        val format = formatFromUrl(url)
-        val request = Request.Builder()
-            .url(url)
-            .header("User-Agent", "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36")
-            .build()
-
-        client.newCall(request).execute().use { resp ->
-            if (!resp.isSuccessful) throw IOException("HTTP ${resp.code}")
-            val body = resp.body ?: throw IOException("下载内容为空")
-            val total = body.contentLength()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                saveViaMediaStore(context, displayName, format, body.byteStream(), total, onProgress)
-            } else {
-                saveLegacyFile(context, displayName, format, body.byteStream(), total, onProgress)
-            }
-        }
+    fun interface ProgressListener {
+        fun onProgress(percent: Int)
     }
-
-    data class AudioFormat(val ext: String, val mime: String)
 
     /**
-     * 根据真实下载链接推断音频格式：
-     * 高音质（740k/999k）通常返回 flac / m4a，普通音质为 mp3
+     * 下载音频文件到公共音乐目录（映月/）。
+     * @return 下载结果（Android 10+ 为 content://，以下为 file://）
      */
-    fun formatFromUrl(url: String): AudioFormat = when {
-        url.contains(".flac", ignoreCase = true) -> AudioFormat("flac", "audio/flac")
-        url.contains(".m4a", ignoreCase = true) -> AudioFormat("m4a", "audio/mp4")
-        url.contains(".ogg", ignoreCase = true) -> AudioFormat("ogg", "audio/ogg")
-        url.contains(".wav", ignoreCase = true) -> AudioFormat("wav", "audio/wav")
-        else -> AudioFormat("mp3", "audio/mpeg")
-    }
-
-    private fun saveViaMediaStore(
+    fun download(
         context: Context,
-        displayName: String,
-        format: AudioFormat,
-        input: java.io.InputStream,
-        total: Long,
-        onProgress: (Progress) -> Unit
-    ): Uri {
-        val resolver = context.contentResolver
+        track: Track,
+        resolved: ResolvedUrl,
+        listener: ProgressListener? = null
+    ): DownloadResult {
+        val fileName = sanitize("${track.name}-${track.artist}.${resolved.ext}")
+        val client = MusicApi.client
 
-        fun insertUri(name: String): Uri? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val resolver = context.contentResolver
             val values = ContentValues().apply {
-                put(MediaStore.Audio.Media.DISPLAY_NAME, name)
-                put("mime_type", format.mime) // MediaStore.MediaColumns.MIME_TYPE 的列名
-                put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/" + MUSIC_DIR)
+                put(MediaStore.Audio.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Audio.Media.MIME_TYPE, resolved.mime)
+                put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/" + DIR_NAME)
                 put(MediaStore.Audio.Media.IS_PENDING, 1)
             }
-            return resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
-        }
+            val collection = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            val itemUri = resolver.insert(collection, values)
+                ?: throw RuntimeException("无法创建下载任务")
 
-        var name = "$displayName.${format.ext}"
-        var uri = insertUri(name)
-        var n = 1
-        while (uri == null) {
-            name = "$displayName ($n).${format.ext}"
-            uri = insertUri(name)
-            n++
-            if (n > 99) throw IOException("无法创建下载文件")
-        }
-
-        try {
-            resolver.openOutputStream(uri)?.use { out ->
-                copyStream(input, out, total, onProgress)
-            } ?: throw IOException("无法打开输出流")
-
-            val done = ContentValues().apply { put(MediaStore.Audio.Media.IS_PENDING, 0) }
-            resolver.update(uri, done, null, null)
-            return uri
-        } catch (e: Exception) {
-            resolver.delete(uri, null, null)
-            throw e
-        }
-    }
-
-    private fun saveLegacyFile(
-        context: Context,
-        displayName: String,
-        format: AudioFormat,
-        input: java.io.InputStream,
-        total: Long,
-        onProgress: (Progress) -> Unit
-    ): Uri {
-        val dir = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-            MUSIC_DIR
-        )
-        if (!dir.exists() && !dir.mkdirs()) throw IOException("无法创建目录 ${dir.absolutePath}")
-
-        var file = File(dir, "$displayName.${format.ext}")
-        var n = 1
-        while (file.exists()) {
-            file = File(dir, "$displayName ($n).${format.ext}")
-            n++
-        }
-
-        file.outputStream().use { out -> copyStream(input, out, total, onProgress) }
-
-        MediaScannerConnection.scanFile(
-            context, arrayOf(file.absolutePath), arrayOf(format.mime), null
-        )
-        return Uri.fromFile(file)
-    }
-
-    private fun copyStream(
-        input: java.io.InputStream,
-        out: java.io.OutputStream,
-        total: Long,
-        onProgress: (Progress) -> Unit
-    ) {
-        val buf = ByteArray(64 * 1024)
-        var received = 0L
-        var lastPct = -1
-        while (true) {
-            val read = input.read(buf)
-            if (read == -1) break
-            out.write(buf, 0, read)
-            received += read
-            val pct = if (total > 0) (received * 100 / total).toInt() else -1
-            if (pct != lastPct) {
-                lastPct = pct
-                onProgress(Progress(pct, received, total))
+            var read = 0L
+            try {
+                client.newCall(Request.Builder().url(resolved.url).build()).execute().use { resp ->
+                    if (!resp.isSuccessful) throw RuntimeException("下载失败: HTTP ${resp.code}")
+                    val body = resp.body ?: throw RuntimeException("下载失败: 空响应")
+                    val total = body.contentLength()
+                    resolver.openOutputStream(itemUri)?.use { out: OutputStream ->
+                        body.byteStream().use { input ->
+                            val buf = ByteArray(64 * 1024)
+                            var n = input.read(buf)
+                            var lastPct = -1
+                            while (n >= 0) {
+                                out.write(buf, 0, n)
+                                read += n
+                                if (total > 0) {
+                                    val pct = (read * 100 / total).toInt()
+                                    if (pct != lastPct) {
+                                        lastPct = pct
+                                        listener?.onProgress(pct)
+                                    }
+                                }
+                                n = input.read(buf)
+                            }
+                            out.flush()
+                        }
+                    } ?: throw RuntimeException("无法写入文件")
+                }
+                values.clear()
+                values.put(MediaStore.Audio.Media.IS_PENDING, 0)
+                resolver.update(itemUri, values, null, null)
+                return DownloadResult(itemUri, read)
+            } catch (e: Exception) {
+                try { resolver.delete(itemUri, null, null) } catch (_: Exception) {}
+                throw e
             }
+        } else {
+            val dir = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+                DIR_NAME
+            )
+            if (!dir.exists()) dir.mkdirs()
+            val file = File(dir, fileName)
+
+            var read = 0L
+            client.newCall(Request.Builder().url(resolved.url).build()).execute().use { resp ->
+                if (!resp.isSuccessful) throw RuntimeException("下载失败: HTTP ${resp.code}")
+                val body = resp.body ?: throw RuntimeException("下载失败: 空响应")
+                val total = body.contentLength()
+                FileOutputStream(file).use { out ->
+                    body.byteStream().use { input ->
+                        val buf = ByteArray(64 * 1024)
+                        var n = input.read(buf)
+                        var lastPct = -1
+                        while (n >= 0) {
+                            out.write(buf, 0, n)
+                            read += n
+                            if (total > 0) {
+                                val pct = (read * 100 / total).toInt()
+                                if (pct != lastPct) {
+                                    lastPct = pct
+                                    listener?.onProgress(pct)
+                                }
+                            }
+                            n = input.read(buf)
+                        }
+                        out.flush()
+                    }
+                }
+            }
+            return DownloadResult(Uri.fromFile(file), read)
         }
-        out.flush()
     }
+
+    /** 清理文件名中的非法字符 */
+    fun sanitize(name: String): String =
+        name.replace(Regex("[\\\\/:*?\"<>|]"), "").trim().take(120).ifEmpty { "audio" }
 }
+
+data class DownloadResult(val uri: Uri, val size: Long)

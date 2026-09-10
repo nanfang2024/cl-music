@@ -4,17 +4,17 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.yue.tool.R;
+import com.yue.tool.util.EqualizerView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -24,42 +24,46 @@ public final class ItemTrackBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final ProgressBar barItem;
+  public final ImageButton buttonDownload;
 
   @NonNull
-  public final ImageButton btnDownload;
+  public final FrameLayout buttonPlay;
 
   @NonNull
-  public final ImageButton btnPlay;
+  public final EqualizerView equalizer;
 
   @NonNull
-  public final ShapeableImageView imageCover;
+  public final ImageView imageCover;
 
   @NonNull
-  public final CircularProgressIndicator progressDownload;
+  public final TextView textArtist;
+
+  @NonNull
+  public final TextView textIndex;
+
+  @NonNull
+  public final TextView textName;
+
+  @NonNull
+  public final TextView textPlayIcon;
 
   @NonNull
   public final TextView textSource;
 
-  @NonNull
-  public final TextView textSubtitle;
-
-  @NonNull
-  public final TextView textTitle;
-
-  private ItemTrackBinding(@NonNull LinearLayout rootView, @NonNull ProgressBar barItem,
-      @NonNull ImageButton btnDownload, @NonNull ImageButton btnPlay,
-      @NonNull ShapeableImageView imageCover, @NonNull CircularProgressIndicator progressDownload,
-      @NonNull TextView textSource, @NonNull TextView textSubtitle, @NonNull TextView textTitle) {
+  private ItemTrackBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDownload,
+      @NonNull FrameLayout buttonPlay, @NonNull EqualizerView equalizer,
+      @NonNull ImageView imageCover, @NonNull TextView textArtist, @NonNull TextView textIndex,
+      @NonNull TextView textName, @NonNull TextView textPlayIcon, @NonNull TextView textSource) {
     this.rootView = rootView;
-    this.barItem = barItem;
-    this.btnDownload = btnDownload;
-    this.btnPlay = btnPlay;
+    this.buttonDownload = buttonDownload;
+    this.buttonPlay = buttonPlay;
+    this.equalizer = equalizer;
     this.imageCover = imageCover;
-    this.progressDownload = progressDownload;
+    this.textArtist = textArtist;
+    this.textIndex = textIndex;
+    this.textName = textName;
+    this.textPlayIcon = textPlayIcon;
     this.textSource = textSource;
-    this.textSubtitle = textSubtitle;
-    this.textTitle = textTitle;
   }
 
   @Override
@@ -89,33 +93,51 @@ public final class ItemTrackBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.barItem;
-      ProgressBar barItem = ViewBindings.findChildViewById(rootView, id);
-      if (barItem == null) {
+      id = R.id.buttonDownload;
+      ImageButton buttonDownload = ViewBindings.findChildViewById(rootView, id);
+      if (buttonDownload == null) {
         break missingId;
       }
 
-      id = R.id.btnDownload;
-      ImageButton btnDownload = ViewBindings.findChildViewById(rootView, id);
-      if (btnDownload == null) {
+      id = R.id.buttonPlay;
+      FrameLayout buttonPlay = ViewBindings.findChildViewById(rootView, id);
+      if (buttonPlay == null) {
         break missingId;
       }
 
-      id = R.id.btnPlay;
-      ImageButton btnPlay = ViewBindings.findChildViewById(rootView, id);
-      if (btnPlay == null) {
+      id = R.id.equalizer;
+      EqualizerView equalizer = ViewBindings.findChildViewById(rootView, id);
+      if (equalizer == null) {
         break missingId;
       }
 
       id = R.id.imageCover;
-      ShapeableImageView imageCover = ViewBindings.findChildViewById(rootView, id);
+      ImageView imageCover = ViewBindings.findChildViewById(rootView, id);
       if (imageCover == null) {
         break missingId;
       }
 
-      id = R.id.progressDownload;
-      CircularProgressIndicator progressDownload = ViewBindings.findChildViewById(rootView, id);
-      if (progressDownload == null) {
+      id = R.id.textArtist;
+      TextView textArtist = ViewBindings.findChildViewById(rootView, id);
+      if (textArtist == null) {
+        break missingId;
+      }
+
+      id = R.id.textIndex;
+      TextView textIndex = ViewBindings.findChildViewById(rootView, id);
+      if (textIndex == null) {
+        break missingId;
+      }
+
+      id = R.id.textName;
+      TextView textName = ViewBindings.findChildViewById(rootView, id);
+      if (textName == null) {
+        break missingId;
+      }
+
+      id = R.id.textPlayIcon;
+      TextView textPlayIcon = ViewBindings.findChildViewById(rootView, id);
+      if (textPlayIcon == null) {
         break missingId;
       }
 
@@ -125,20 +147,8 @@ public final class ItemTrackBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.textSubtitle;
-      TextView textSubtitle = ViewBindings.findChildViewById(rootView, id);
-      if (textSubtitle == null) {
-        break missingId;
-      }
-
-      id = R.id.textTitle;
-      TextView textTitle = ViewBindings.findChildViewById(rootView, id);
-      if (textTitle == null) {
-        break missingId;
-      }
-
-      return new ItemTrackBinding((LinearLayout) rootView, barItem, btnDownload, btnPlay,
-          imageCover, progressDownload, textSource, textSubtitle, textTitle);
+      return new ItemTrackBinding((LinearLayout) rootView, buttonDownload, buttonPlay, equalizer,
+          imageCover, textArtist, textIndex, textName, textPlayIcon, textSource);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

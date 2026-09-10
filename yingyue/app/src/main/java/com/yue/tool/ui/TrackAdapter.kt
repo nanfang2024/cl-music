@@ -1,187 +1,127 @@
 package com.yue.tool.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.yue.tool.R
 import com.yue.tool.api.MusicApi
 import com.yue.tool.api.Track
 import com.yue.tool.databinding.ItemTrackBinding
+import com.yue.tool.util.ImageLoader
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-sealed class DlState {
-    data object Idle : DlState()
-    data object Fetching : DlState()
-    data class Downloading(val percent: Int) : DlState()
-    data object Done : DlState()
-    data class Error(val message: String) : DlState()
-}
+import kotlinx.coroutines.withContext
 
 class TrackAdapter(
-    private val scope: CoroutineScope,
-    private val onPlay: (Track) -> Unit,
-    private val onDownload: (Track) -> Unit
-) : RecyclerView.Adapter<TrackAdapter.VH>() {
+    private val onDownload: (Track) -> Unit,
+    private val onPlay: (Track) -> Unit
+) : ListAdapter<Track, TrackAdapter.Holder>(DIFF) {
 
-    private val items = mutableListOf<Track>()
-    private val covers = HashMap<String, String>()   // pic_id -> url
-    private val states = HashMap<String, DlState>() // url_id -> state
-    private val picJobs = HashMap<String, Job>()
+    /** 当前选中的曲目（含暂停状态），null 表示无播放 */
+    private var playingId: String? = null
+    private var playingActive = false
 
-    var playingId: String? = null
-        private set
-
-    fun submit(list: List<Track>) {
-        cancelPicJobs()
-        items.clear()
-        items.addAll(list)
-        states.clear()
-        playingId = null
-        notifyDataSetChanged()
-    }
-
-    fun setState(urlId: String, state: DlState) {
-        states[urlId] = state
-        notifyItemChanged(indexOf(urlId))
-    }
-
-    fun getState(urlId: String?): DlState = states[urlId] ?: DlState.Idle
-
-    fun setPlaying(urlId: String?) {
-        val old = playingId
-        playingId = urlId
-        old?.let { notifyItemChanged(indexOf(it)) }
-        urlId?.let { notifyItemChanged(indexOf(it)) }
-    }
-
-    private fun indexOf(urlId: String): Int {
-        val i = items.indexOfFirst { it.url_id == urlId }
-        return if (i >= 0) i else 0
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = ItemTrackBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return VH(binding)
-    }
-
-    override fun getItemCount(): Int = items.size
-
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val track = items[position]
-        val binding = holder.binding
-
-        binding.textTitle.text = track.name
-        binding.textSubtitle.text = buildString {
-            append(track.artistLine)
-            if (!track.album.isNullOrEmpty()) {
-                append(" · ")
-                append(track.album)
+    /**
+     * 设置播放状态
+     * @param trackId 当前曲目 id，null 表示停止
+     * @param isActive true=正在播放（显示均衡器），false=已暂停（显示 ‖）
+     */
+    fun setPlayingState(trackId: String?, isActive: Boolean) {
+        val oldId = playingId
+        val oldActive = playingActive
+        playingId = trackId
+        playingActive = isActive
+        if (oldId != trackId || oldActive != isActive) {
+            (listOf(oldId, trackId)).filterNotNull().distinct().forEach { id ->
+                val pos = currentList.indexOfFirst { it.id == id }
+                if (pos >= 0) notifyItemChanged(pos)
             }
         }
-        binding.textSource.text =
-            binding.root.context.getString(
-                if (track.source == "joox") R.string.source_joox else R.string.source_netease
+    }
+
+    class Holder(val binding: ItemTrackBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val binding = ItemTrackBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Holder(binding)
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val track = getItem(position)
+        val ctx = holder.binding.root.context
+        with(holder.binding) {
+            textIndex.text = (position + 1).toString()
+            textName.text = track.name
+            textArtist.text = buildString {
+                append(track.artist)
+                if (track.album.isNotEmpty()) append(" · ").append(track.album)
+            }
+            textSource.text = ctx.getString(
+                when (track.source) {
+                    "joox" -> R.string.source_joox
+                    "kuwo" -> R.string.source_kuwo
+                    else -> R.string.source_netease
+                }
+            )
+            // 软底 pill：同色系 14% 透明度背景
+            val pillColor = ContextCompat.getColor(
+                ctx,
+                when (track.source) {
+                    "joox" -> R.color.jooxPill
+                    "kuwo" -> R.color.kuwoPill
+                    else -> R.color.neteasePill
+                }
+            )
+            textSource.setTextColor(pillColor)
+            textSource.background?.mutate()?.setTint(
+                (pillColor and 0x00FFFFFF) or 0x24000000
             )
 
-        bindCover(binding, track)
-        bindState(binding, track)
-        bindPlayIcon(binding, track)
-
-        binding.btnPlay.setOnClickListener { onPlay(track) }
-        binding.btnDownload.setOnClickListener { onDownload(track) }
-    }
-
-    private fun bindCover(binding: ItemTrackBinding, track: Track) {
-        val picId = track.pic_id ?: return
-        val cached = covers[picId]
-        if (cached != null) {
-            binding.imageCover.load(cached) { crossfade(true) }
-            return
-        }
-        picJobs[picId]?.cancel()
-        picJobs[picId] = scope.launch {
-            val pic = MusicApi.fetchPic(track.source, picId)
-            if (!pic.url.isNullOrEmpty()) {
-                covers[picId] = pic.url
-                if (holderAlive(binding, track)) {
-                    binding.imageCover.load(pic.url) { crossfade(true) }
+            // 封面图加载
+            imageCover.tag = track.coverUrl ?: "pending:${track.id}"
+            when {
+                !track.coverUrl.isNullOrEmpty() ->
+                    ImageLoader.load(imageCover, track.coverUrl)
+                track.source == "netease" || track.source == "joox" -> {
+                    // 芸朵/绿鹅需要额外请求封面 URL
+                    imageCover.setImageResource(R.drawable.ic_cover_placeholder)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val coverUrl = runCatching { MusicApi.resolveCover(track) }.getOrNull()
+                        withContext(Dispatchers.Main) {
+                            if (imageCover.tag == "pending:${track.id}" && coverUrl != null) {
+                                imageCover.tag = coverUrl
+                                ImageLoader.load(imageCover, coverUrl)
+                            }
+                        }
+                    }
                 }
+                else -> imageCover.setImageResource(R.drawable.ic_cover_placeholder)
             }
+
+            // 播放状态：均衡器（播放中）/ ‖（暂停）/ ▶（未播放）
+            val isCurrent = track.id == playingId
+            equalizer.visibility = if (isCurrent && playingActive) View.VISIBLE else View.GONE
+            textPlayIcon.visibility = if (isCurrent && playingActive) View.GONE else View.VISIBLE
+            textPlayIcon.text = if (isCurrent) "‖" else "▶"
+
+            buttonPlay.setOnClickListener { onPlay(track) }
+            buttonDownload.setOnClickListener { onDownload(track) }
+            // 整行点击切换播放
+            root.setOnClickListener { onPlay(track) }
         }
     }
 
-    private fun holderAlive(binding: ItemTrackBinding, track: Track): Boolean =
-        binding.root.isAttachedToWindow && items.any { it.url_id == track.url_id }
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<Track>() {
+            override fun areItemsTheSame(a: Track, b: Track) =
+                a.id == b.id && a.source == b.source
 
-    private fun bindState(binding: ItemTrackBinding, track: Track) {
-        val urlId = track.url_id ?: return
-        when (val s = getState(urlId)) {
-            is DlState.Idle -> {
-                binding.btnDownload.isVisible = true
-                binding.progressDownload.isVisible = false
-                binding.progressDownload.isIndeterminate = false
-                binding.progressDownload.progress = 0
-                binding.barItem.isVisible = false
-                binding.btnDownload.setImageResource(R.drawable.ic_download)
-                binding.btnDownload.imageTintList = colorState(binding, R.color.moonGold)
-            }
-            is DlState.Fetching -> {
-                binding.btnDownload.isVisible = false
-                binding.barItem.isVisible = false
-                binding.progressDownload.isVisible = true
-                binding.progressDownload.isIndeterminate = true
-            }
-            is DlState.Downloading -> {
-                binding.btnDownload.isVisible = false
-                binding.progressDownload.isVisible = true
-                binding.progressDownload.isIndeterminate = false
-                binding.progressDownload.max = 100
-                binding.progressDownload.progress = s.percent.coerceAtLeast(0)
-                binding.barItem.isVisible = true
-                binding.barItem.max = 100
-                binding.barItem.progress = s.percent.coerceAtLeast(0)
-            }
-            is DlState.Done -> {
-                binding.btnDownload.isVisible = true
-                binding.progressDownload.isVisible = false
-                binding.barItem.isVisible = false
-                binding.btnDownload.setImageResource(R.drawable.ic_check)
-                binding.btnDownload.imageTintList = colorState(binding, R.color.mintGreen)
-            }
-            is DlState.Error -> {
-                binding.btnDownload.isVisible = true
-                binding.progressDownload.isVisible = false
-                binding.barItem.isVisible = false
-                binding.btnDownload.setImageResource(R.drawable.ic_download)
-                binding.btnDownload.imageTintList = colorState(binding, R.color.textSecondary)
-            }
+            override fun areContentsTheSame(a: Track, b: Track) = a == b
         }
     }
-
-    private fun bindPlayIcon(binding: ItemTrackBinding, track: Track) {
-        val playingThis = playingId != null && playingId == track.url_id
-        binding.btnPlay.setImageResource(
-            if (playingThis) R.drawable.ic_pause else R.drawable.ic_play
-        )
-        binding.btnPlay.imageTintList = colorState(
-            binding,
-            if (playingThis) R.color.moonGold else R.color.textSecondary
-        )
-    }
-
-    private fun colorState(binding: ItemTrackBinding, colorRes: Int) =
-        androidx.core.content.ContextCompat.getColorStateList(binding.root.context, colorRes)
-
-    private fun cancelPicJobs() {
-        picJobs.values.forEach { it.cancel() }
-        picJobs.clear()
-    }
-
-    class VH(val binding: ItemTrackBinding) : RecyclerView.ViewHolder(binding.root)
 }

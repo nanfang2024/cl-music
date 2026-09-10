@@ -3,109 +3,99 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/appBg"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="16dp"
     android:paddingVertical="10dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <TextView
+        android:id="@+id/textIndex"
+        android:layout_width="28dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textSecondary"
+        android:textSize="13sp" />
+
+    <ImageView
         android:id="@+id/imageCover"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:background="@color/surfaceVariant"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_cover"
+        android:contentDescription="@string/tab_home"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/CoverRounded" />
+        android:src="@drawable/ic_cover_placeholder" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textTitle"
+            android:id="@+id/textName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/textPrimary"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/textSecondary"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textSource"
+                style="@style/PillText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_tag"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="1dp"
-                android:textColor="@color/moonGold"
-                android:textSize="10sp" />
+                android:layout_height="wrap_content" />
 
-            <ProgressBar
-                android:id="@+id/barItem"
-                style="?android:attr/progressBarStyleHorizontal"
+            <TextView
+                android:id="@+id/textArtist"
                 android:layout_width="0dp"
-                android:layout_height="3dp"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:max="100"
-                android:progressTint="@color/moonGold"
-                android:visibility="gone" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnPlay"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/btn_search"
-        android:src="@drawable/ic_play" />
-
     <FrameLayout
+        android:id="@+id/buttonPlay"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp">
+        android:layout_height="40dp">
 
-        <ImageButton
-            android:id="@+id/btnDownload"
+        <TextView
+            android:id="@+id/textPlayIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/btn_search"
-            android:src="@drawable/ic_download" />
+            android:gravity="center"
+            android:textColor="@color/moonGold"
+            android:textSize="22sp"
+            android:text="▶" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progressDownload"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorColor="@color/moonGold"
-            app:indicatorSize="24dp"
-            app:trackThickness="3dp" />
+        <com.yue.tool.util.EqualizerView
+            android:id="@+id/equalizer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/buttonDownload"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/download"
+        android:src="@drawable/ic_download"
+        app:tint="@color/moonGold" />
 
 </LinearLayout>

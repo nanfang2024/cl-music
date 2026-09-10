@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.yue.tool.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -22,34 +22,42 @@ public final class ItemDownloadBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final ImageButton btnDelete;
+  public final ImageButton buttonDelete;
 
   @NonNull
-  public final ImageButton btnPlay;
+  public final ImageButton buttonShare;
 
   @NonNull
-  public final ImageButton btnShare;
+  public final ImageView imageCover;
 
   @NonNull
-  public final ShapeableImageView imageIcon;
+  public final TextView textArtist;
 
   @NonNull
-  public final TextView textMeta;
+  public final TextView textFormat;
 
   @NonNull
   public final TextView textName;
 
-  private ItemDownloadBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnDelete,
-      @NonNull ImageButton btnPlay, @NonNull ImageButton btnShare,
-      @NonNull ShapeableImageView imageIcon, @NonNull TextView textMeta,
-      @NonNull TextView textName) {
+  @NonNull
+  public final TextView textSource;
+
+  @NonNull
+  public final TextView textTime;
+
+  private ItemDownloadBinding(@NonNull LinearLayout rootView, @NonNull ImageButton buttonDelete,
+      @NonNull ImageButton buttonShare, @NonNull ImageView imageCover, @NonNull TextView textArtist,
+      @NonNull TextView textFormat, @NonNull TextView textName, @NonNull TextView textSource,
+      @NonNull TextView textTime) {
     this.rootView = rootView;
-    this.btnDelete = btnDelete;
-    this.btnPlay = btnPlay;
-    this.btnShare = btnShare;
-    this.imageIcon = imageIcon;
-    this.textMeta = textMeta;
+    this.buttonDelete = buttonDelete;
+    this.buttonShare = buttonShare;
+    this.imageCover = imageCover;
+    this.textArtist = textArtist;
+    this.textFormat = textFormat;
     this.textName = textName;
+    this.textSource = textSource;
+    this.textTime = textTime;
   }
 
   @Override
@@ -79,33 +87,33 @@ public final class ItemDownloadBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnDelete;
-      ImageButton btnDelete = ViewBindings.findChildViewById(rootView, id);
-      if (btnDelete == null) {
+      id = R.id.buttonDelete;
+      ImageButton buttonDelete = ViewBindings.findChildViewById(rootView, id);
+      if (buttonDelete == null) {
         break missingId;
       }
 
-      id = R.id.btnPlay;
-      ImageButton btnPlay = ViewBindings.findChildViewById(rootView, id);
-      if (btnPlay == null) {
+      id = R.id.buttonShare;
+      ImageButton buttonShare = ViewBindings.findChildViewById(rootView, id);
+      if (buttonShare == null) {
         break missingId;
       }
 
-      id = R.id.btnShare;
-      ImageButton btnShare = ViewBindings.findChildViewById(rootView, id);
-      if (btnShare == null) {
+      id = R.id.imageCover;
+      ImageView imageCover = ViewBindings.findChildViewById(rootView, id);
+      if (imageCover == null) {
         break missingId;
       }
 
-      id = R.id.imageIcon;
-      ShapeableImageView imageIcon = ViewBindings.findChildViewById(rootView, id);
-      if (imageIcon == null) {
+      id = R.id.textArtist;
+      TextView textArtist = ViewBindings.findChildViewById(rootView, id);
+      if (textArtist == null) {
         break missingId;
       }
 
-      id = R.id.textMeta;
-      TextView textMeta = ViewBindings.findChildViewById(rootView, id);
-      if (textMeta == null) {
+      id = R.id.textFormat;
+      TextView textFormat = ViewBindings.findChildViewById(rootView, id);
+      if (textFormat == null) {
         break missingId;
       }
 
@@ -115,8 +123,20 @@ public final class ItemDownloadBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemDownloadBinding((LinearLayout) rootView, btnDelete, btnPlay, btnShare,
-          imageIcon, textMeta, textName);
+      id = R.id.textSource;
+      TextView textSource = ViewBindings.findChildViewById(rootView, id);
+      if (textSource == null) {
+        break missingId;
+      }
+
+      id = R.id.textTime;
+      TextView textTime = ViewBindings.findChildViewById(rootView, id);
+      if (textTime == null) {
+        break missingId;
+      }
+
+      return new ItemDownloadBinding((LinearLayout) rootView, buttonDelete, buttonShare, imageCover,
+          textArtist, textFormat, textName, textSource, textTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

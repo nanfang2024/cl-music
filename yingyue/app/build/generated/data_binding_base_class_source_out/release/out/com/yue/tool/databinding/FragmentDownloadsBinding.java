@@ -4,7 +4,7 @@ package com.yue.tool.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,24 +18,24 @@ import java.lang.String;
 
 public final class FragmentDownloadsBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
   @NonNull
-  public final RecyclerView recyclerDownloads;
+  public final RecyclerView listDownloads;
 
   @NonNull
-  public final TextView textEmptyDownloads;
+  public final TextView textEmpty;
 
-  private FragmentDownloadsBinding(@NonNull LinearLayout rootView,
-      @NonNull RecyclerView recyclerDownloads, @NonNull TextView textEmptyDownloads) {
+  private FragmentDownloadsBinding(@NonNull FrameLayout rootView,
+      @NonNull RecyclerView listDownloads, @NonNull TextView textEmpty) {
     this.rootView = rootView;
-    this.recyclerDownloads = recyclerDownloads;
-    this.textEmptyDownloads = textEmptyDownloads;
+    this.listDownloads = listDownloads;
+    this.textEmpty = textEmpty;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -60,20 +60,19 @@ public final class FragmentDownloadsBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.recyclerDownloads;
-      RecyclerView recyclerDownloads = ViewBindings.findChildViewById(rootView, id);
-      if (recyclerDownloads == null) {
+      id = R.id.listDownloads;
+      RecyclerView listDownloads = ViewBindings.findChildViewById(rootView, id);
+      if (listDownloads == null) {
         break missingId;
       }
 
-      id = R.id.textEmptyDownloads;
-      TextView textEmptyDownloads = ViewBindings.findChildViewById(rootView, id);
-      if (textEmptyDownloads == null) {
+      id = R.id.textEmpty;
+      TextView textEmpty = ViewBindings.findChildViewById(rootView, id);
+      if (textEmpty == null) {
         break missingId;
       }
 
-      return new FragmentDownloadsBinding((LinearLayout) rootView, recyclerDownloads,
-          textEmptyDownloads);
+      return new FragmentDownloadsBinding((FrameLayout) rootView, listDownloads, textEmpty);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

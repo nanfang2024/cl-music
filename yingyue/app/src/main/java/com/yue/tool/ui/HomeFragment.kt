@@ -2,30 +2,35 @@ package com.yue.tool.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.yue.tool.R
 import com.yue.tool.api.MusicApi
 import com.yue.tool.api.Track
 import com.yue.tool.data.DownloadHistory
 import com.yue.tool.data.DownloadRecord
+import com.yue.tool.databinding.DialogDownloadBinding
 import com.yue.tool.databinding.FragmentHomeBinding
 import com.yue.tool.download.Downloader
+import com.yue.tool.player.PlayerManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -33,239 +38,264 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: TrackAdapter
-    private var player: MediaPlayer? = null
-    private var pendingDownload: Track? = null
+    private val tracks = mutableListOf<Track>()
 
-    private val storagePermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            val track = pendingDownload
-            pendingDownload = null
-            if (granted && track != null) {
-                startDownload(track)
-            } else if (track != null) {
-                toast("未授予存储权限，无法下载")
-            }
-        }
+    private var searchJob: Job? = null
+    private var currentPage = 1
+    private var lastKeyword = ""
+    private var isLoadingMore = false
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) toast("未授予存储权限，Android 8/9 无法保存文件")
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         adapter = TrackAdapter(
-            scope = viewLifecycleOwner.lifecycleScope,
-            onPlay = { togglePlay(it) },
-            onDownload = { tryDownload(it) }
+            onDownload = { startDownload(it) },
+            onPlay = { togglePlay(it) }
         )
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-        binding.recycler.adapter = adapter
+        binding.listTracks.layoutManager = LinearLayoutManager(requireContext())
+        binding.listTracks.adapter = adapter
+        // 列表分隔线
+        binding.listTracks.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL).apply {
+                setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_list)!!)
+            }
+        )
+        // 初始显示空状态，隐藏列表
+        binding.listTracks.visibility = View.GONE
+
+        // 注册播放器状态回调
+        PlayerManager.onStateChange = { trackId, isPlaying ->
+            adapter.setPlayingState(trackId, isPlaying)
+        }
+        // 恢复已有播放状态
+        PlayerManager.getCurrentTrackId()?.let {
+            adapter.setPlayingState(it, true)
+        }
 
         binding.btnSearch.setOnClickListener { doSearch() }
-        binding.editQuery.setOnEditorActionListener { _, actionId, _ ->
+        // Critical #5: 搜索键 IME 回调
+        binding.inputKeyword.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch()
                 true
             } else false
         }
+
+        // Major #7: 滚动到底部加载下一页
+        binding.listTracks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                if (dy <= 0 || isLoadingMore) return
+                val lm = rv.layoutManager as LinearLayoutManager
+                val total = lm.itemCount
+                val last = lm.findLastVisibleItemPosition()
+                if (total - last <= 3) loadMore()
+            }
+        })
+
+        // 首页默认选中第一个音源（芸朵），不选全部
+        binding.chipNetease.isChecked = true
+        binding.chipJoox.isChecked = false
+        binding.chipKuwo.isChecked = false
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        }
     }
 
-    private fun currentSource(): String =
-        if (binding.chipJoox.isChecked) "joox" else "netease"
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchJob?.cancel()
+        _binding = null
+    }
 
-    private fun currentQuality(): Int = when {
-        binding.chipQ128.isChecked -> 128
-        binding.chipQ192.isChecked -> 192
-        binding.chipQ320.isChecked -> 320
-        binding.chipQ740.isChecked -> 740
-        else -> 999
+    // ==================== 搜索 ====================
+
+    private fun selectedSources(): List<String> {
+        val sources = mutableListOf<String>()
+        if (binding.chipNetease.isChecked) sources += "netease"
+        if (binding.chipJoox.isChecked) sources += "joox"
+        if (binding.chipKuwo.isChecked) sources += "kuwo"
+        return sources
+    }
+
+    private fun selectedQuality(): String = when (binding.qualityGroup.checkedChipId) {
+        R.id.chipQuality128 -> "128k"
+        R.id.chipQuality320 -> "320k"
+        R.id.chipQuality740 -> "740k"
+        else -> "999k"
     }
 
     private fun doSearch() {
-        val query = binding.editQuery.text?.toString()?.trim().orEmpty()
-        if (query.isEmpty()) {
-            binding.editLayout.error = "想听什么歌，先输个关键词吧"
+        val keyword = binding.inputKeyword.text?.toString()?.trim().orEmpty()
+        if (keyword.isEmpty()) {
+            toast(getString(R.string.hint_keyword))
             return
         }
-        binding.editLayout.error = null
-        hideKeyboard()
+        val sources = selectedSources()
+        if (sources.isEmpty()) {
+            toast(getString(R.string.hint_no_source))
+            return
+        }
+        // 重置状态
+        searchJob?.cancel()
+        currentPage = 1
+        lastKeyword = keyword
+        tracks.clear()
+        adapter.submitList(emptyList())
+        binding.textStatus.text = getString(R.string.status_searching)
+        binding.progressSearch.visibility = View.VISIBLE
+        binding.btnSearch.isEnabled = false
+        binding.layoutEmpty.visibility = View.GONE
 
-        binding.progress.isVisible = true
-        binding.textEmpty.isVisible = false
-        binding.recycler.isVisible = false
-        adapter.submit(emptyList())
-
-        val source = currentSource()
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val result = MusicApi.search(source, query)
-                adapter.submit(result)
-                if (result.isEmpty()) {
-                    binding.textEmpty.isVisible = true
-                    binding.textEmpty.text = "没有找到相关歌曲"
-                } else {
-                    binding.recycler.isVisible = true
-                }
-            } catch (e: Exception) {
-                binding.textEmpty.isVisible = true
-                binding.textEmpty.text = "搜索失败：${e.message}"
-            } finally {
-                binding.progress.isVisible = false
+        searchJob = lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching { MusicApi.search(keyword, sources, 1) }.getOrNull()
+            }
+            binding.btnSearch.isEnabled = true
+            binding.progressSearch.visibility = View.GONE
+            if (result == null) {
+                binding.textStatus.text = getString(R.string.status_search_failed)
+                return@launch
+            }
+            tracks.clear()
+            tracks.addAll(result)
+            adapter.submitList(result)
+            binding.textStatus.text = getString(R.string.status_result_count, result.size)
+            if (result.isEmpty()) {
+                binding.layoutEmpty.visibility = View.VISIBLE
+                binding.listTracks.visibility = View.GONE
+                toast(getString(R.string.status_empty))
+            } else {
+                binding.layoutEmpty.visibility = View.GONE
+                binding.listTracks.visibility = View.VISIBLE
             }
         }
     }
 
-    private fun tryDownload(track: Track) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
-            ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            pendingDownload = track
-            storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            return
+    private fun loadMore() {
+        if (isLoadingMore || lastKeyword.isEmpty()) return
+        val sources = selectedSources()
+        if (sources.isEmpty()) return
+        isLoadingMore = true
+        val nextPage = currentPage + 1
+
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching { MusicApi.search(lastKeyword, sources, nextPage) }.getOrNull()
+            }
+            isLoadingMore = false
+            if (result == null || result.isEmpty()) return@launch
+            currentPage = nextPage
+            tracks.addAll(result)
+            adapter.submitList(tracks.toList())
+            binding.textStatus.text = getString(R.string.status_result_count, tracks.size)
         }
-        startDownload(track)
     }
+
+    // ==================== 试听（通过 PlayerManager） ====================
+
+    private fun togglePlay(track: Track) {
+        // 如果是当前播放的歌曲 → 切换播放/暂停
+        if (PlayerManager.togglePlay(track)) return
+        // 否则开始播放新歌（当前搜索结果作为播放队列，支持上一首/下一首）
+        PlayerManager.startPlay(track, tracks.toList()) {
+            toast(getString(R.string.resolve_failed))
+        }
+    }
+
+    // ==================== 下载 ====================
 
     private fun startDownload(track: Track) {
-        val urlId = track.url_id ?: run {
-            toast("该曲目缺少下载信息")
-            return
-        }
-        when (adapter.getState(urlId)) {
-            is DlState.Fetching, is DlState.Downloading -> {
-                toast("正在下载中，请稍候")
-                return
+        val quality = selectedQuality()
+        val dialogBinding = DialogDownloadBinding.inflate(layoutInflater)
+        var downloadJob: Job? = null
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.downloading))
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                // Critical #3: 取消下载协程
+                downloadJob?.cancel()
             }
-            else -> Unit
-        }
+            .show()
 
-        val br = currentQuality()
-        adapter.setState(urlId, DlState.Fetching)
+        dialogBinding.textInfo.text = "${track.name} · ${track.artist}"
+        dialogBinding.progress.max = 100
+        dialogBinding.progress.progress = 0
+        dialogBinding.textPercent.text = "0%"
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val info = MusicApi.fetchUrl(track.source, urlId, br)
-                val link = info.url
-                if (link.isNullOrEmpty()) throw IllegalStateException("该歌曲暂无 ${br}k 音质")
-
-                val displayName = Downloader.safeName("${track.artistLine} - ${track.name}")
-                val format = Downloader.formatFromUrl(link)
-                var received = 0L
-                val uri = Downloader.download(requireContext(), link, displayName) { p ->
-                    received = p.received
-                    activity?.runOnUiThread {
-                        if (p.percent >= 0) adapter.setState(urlId, DlState.Downloading(p.percent))
+        downloadJob = lifecycleScope.launch {
+            var errorDetail: String? = null
+            val result = withContext(Dispatchers.IO) {
+                try {
+                    val resolved = MusicApi.resolveUrl(track, quality)
+                    val dl = Downloader.download(requireContext(), track, resolved) { pct ->
+                        if (!isAdded) return@download
+                        lifecycleScope.launch {
+                            _binding?.let {
+                                dialogBinding.progress.progress = pct
+                                dialogBinding.textPercent.text = "$pct%"
+                            }
+                        }
                     }
+                    // 下载时顺便解析封面（失败不影响下载）
+                    val cover = runCatching { MusicApi.resolveCover(track) }.getOrNull()
+                    Triple(resolved, dl, cover)
+                } catch (e: Exception) {
+                    // Major #9: 保留错误详情
+                    errorDetail = e.message ?: e.javaClass.simpleName
+                    null
                 }
-                adapter.setState(urlId, DlState.Done)
-
+            }
+            dialog.dismiss()
+            if (result == null) {
+                toast(getString(R.string.download_failed) + errorDetail?.let { "：$it" }.orEmpty())
+            } else {
+                val (resolved, dl, cover) = result
                 DownloadHistory.add(
                     requireContext(),
                     DownloadRecord(
                         name = track.name,
-                        artist = track.artistLine,
-                        format = format.ext,
-                        size = received,
+                        artist = track.artist,
+                        source = track.source,
+                        format = resolved.ext,
+                        quality = resolved.qualityLabel,
                         time = System.currentTimeMillis(),
-                        uri = uri.toString()
+                        uri = dl.uri.toString(),
+                        size = dl.size,
+                        coverUrl = cover
                     )
                 )
-
+                // Snackbar 带「查看」跳转下载页
                 Snackbar.make(
                     binding.root,
-                    "已保存 ${format.ext.uppercase()} · ${track.name}",
+                    getString(R.string.download_done, resolved.qualityLabel, resolved.ext),
                     Snackbar.LENGTH_LONG
-                ).show()
-            } catch (e: Exception) {
-                adapter.setState(urlId, DlState.Error(e.message ?: "下载失败"))
-                Snackbar.make(
-                    binding.root,
-                    "下载失败：${e.message}",
-                    Snackbar.LENGTH_LONG
-                ).setAction("重试") { startDownload(track) }
-                    .show()
+                ).setAction(getString(R.string.action_view)) {
+                    (activity as? com.yue.tool.MainActivity)?.switchToDownloads()
+                }.show()
             }
-        }
-    }
-
-    private fun togglePlay(track: Track) {
-        val urlId = track.url_id ?: return
-        if (urlId == adapter.playingId && player?.isPlaying == true) {
-            player?.pause()
-            adapter.setPlaying(null)
-            return
-        }
-
-        releasePlayer()
-        adapter.setPlaying(urlId)
-        toast("正在获取播放链接…")
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val info = MusicApi.fetchUrl(track.source, urlId, currentQuality())
-                val link = info.url
-                if (link.isNullOrEmpty()) throw IllegalStateException("暂时无法获取播放链接")
-
-                val mp = MediaPlayer().apply {
-                    setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .build()
-                    )
-                    setDataSource(link)
-                    setOnCompletionListener {
-                        adapter.setPlaying(null)
-                        releasePlayer()
-                    }
-                    setOnErrorListener { _, what, extra ->
-                        adapter.setPlaying(null)
-                        releasePlayer()
-                        toast("播放失败 ($what/$extra)")
-                        true
-                    }
-                    prepare()
-                    start()
-                }
-                player = mp
-            } catch (e: Exception) {
-                adapter.setPlaying(null)
-                releasePlayer()
-                toast("播放失败：${e.message}")
-            }
-        }
-    }
-
-    private fun releasePlayer() {
-        player?.run {
-            runCatching { stop() }
-            runCatching { release() }
-        }
-        player = null
-    }
-
-    private fun hideKeyboard() {
-        activity?.currentFocus?.let { focus ->
-            val imm = requireContext().getSystemService(InputMethodManager::class.java)
-            imm.hideSoftInputFromWindow(focus.windowToken, 0)
         }
     }
 
     private fun toast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        releasePlayer()
-        _binding = null
     }
 }
