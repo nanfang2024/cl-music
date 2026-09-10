@@ -387,35 +387,116 @@ object MusicApi {
         throw RuntimeException(lastError)
     }
 
-    /** 库窝：br=7(128k) / 5(320k) / 1(flac) */
+    /**
+     * 库窝解析链：官方 mobi.s（DES）→ nxinxz → haitangw → xcloudv
+     * 备用源策略参考 musicdl 项目
+     */
     private fun resolveKuwo(track: Track, quality: String): ResolvedUrl {
-        val br = when (quality) {
-            "128k" -> "7"
-            "320k" -> "5"
-            "740k" -> "1"
-            else -> "1"
+        val fails = mutableListOf<String>()
+        try {
+            return resolveKuwoOfficial(track, quality)
+        } catch (e: Exception) {
+            fails += e.message ?: ""
         }
-        val url = "$KUWO_API?msg=${enc(track.keyword)}&n=${track.index}&br=$br"
-        val root = parse(get(url))
-            ?: throw RuntimeException("库窝音源解析失败：无响应")
-        val data = root.getAsJsonObject("data")
-            ?: throw RuntimeException("库窝音源未返回数据：${root.get("msg") ?: "未知错误"}")
-        val playUrl = data.get("url")?.takeIf { !it.isJsonNull }?.asString
-            ?: throw RuntimeException("库窝音源未返回链接（可能无版权）")
-        val format = data.get("format")?.takeIf { !it.isJsonNull }?.asString ?: ""
-        val bitrate = data.get("bitrate")?.takeIf { !it.isJsonNull }?.asString ?: ""
-        val fmt = if (format.isNotEmpty()) {
-            when (format.lowercase()) {
-                "flac" -> AudioFormat("flac", "audio/flac")
-                "mp3" -> AudioFormat("mp3", "audio/mpeg")
-                "aac", "m4a" -> AudioFormat("m4a", "audio/mp4")
-                "ogg" -> AudioFormat("ogg", "audio/ogg")
-                else -> formatFromUrl(playUrl)
+        val level = when (quality) {
+            "740k", "999k" -> "lossless"
+            "320k" -> "exhigh"
+            else -> "standard"
+        }
+        try {
+            return resolveKuwoBackup(
+                get("https://music.nxinxz.com/kw.php?id=${enc(track.id)}&level=$level&type=json"),
+                level
+            )
+        } catch (e: Exception) {
+            fails += e.message ?: ""
+        }
+        try {
+            return resolveKuwoBackup(
+                get("https://musicapi.haitangw.net/music/kw.php?id=${enc(track.id)}&level=$level&type=json"),
+                level
+            )
+        } catch (e: Exception) {
+            fails += e.message ?: ""
+        }
+        try {
+            val body = FormBody.Builder()
+                .add("action", "url")
+                .add("songid", track.id)
+                .add("yz", "5")
+                .build()
+            val req = Request.Builder()
+                .url("https://music.xcloudv.top/php/kuwo_backup_source.php")
+                .header("Origin", "https://music.xcloudv.top")
+                .header("Referer", "https://music.xcloudv.top/")
+                .header("User-Agent", KUWO_UA)
+                .post(body)
+                .build()
+            val text = client.newCall(req).execute().use { resp ->
+                if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}")
+                resp.body?.string() ?: throw RuntimeException("空响应")
             }
-        } else {
-            formatFromUrl(playUrl)
+            return resolveKuwoBackup(text, level)
+        } catch (e: Exception) {
+            fails += e.message ?: ""
         }
-        val label = if (fmt.ext == "flac") "FLAC无损" else "${bitrate}k"
+        throw RuntimeException("库窝音源解析失败：官方与备用线路均不可用")
+    }
+
+    /** 官方 mobi.s：DES 加密请求，format=mp3(128k) / mp3+br=320kmp3 / flac */
+    private fun resolveKuwoOfficial(track: Track, quality: String): ResolvedUrl {
+        val formats = when (quality) {
+            "740k", "999k" -> listOf("flac", "mp3")
+            "320k" -> listOf("mp3&br=320kmp3")
+            else -> listOf("mp3")
+        }
+        var lastErr = ""
+        for (fmt in formats) {
+            try {
+                val query = "user=0&corp=kuwo&source=kwplayer_ar_5.1.0.0_B_jiakong_vh.apk" +
+                        "&p2p=1&type=convert_url2&sig=0&format=$fmt&rid=${track.id}"
+                val q = KuwoDes.encryptQuery(query)
+                val text = get("$KUWO_MOBI?f=kuwo&q=$q", mapOf("User-Agent" to "okhttp/3.10.0"))
+                var playUrl = ""
+                var format = ""
+                var bitrate = ""
+                for (line in text.lines()) {
+                    val i = line.indexOf('=')
+                    if (i <= 0) continue
+                    when (line.substring(0, i)) {
+                        "url" -> if (playUrl.isEmpty()) playUrl = line.substring(i + 1).trim()
+                        "format" -> format = line.substring(i + 1).trim()
+                        "bitrate" -> bitrate = line.substring(i + 1).trim()
+                    }
+                }
+                if (!playUrl.startsWith("http")) throw RuntimeException("官方接口未返回链接")
+                if (!probeUrl(playUrl)) throw RuntimeException("官方链接探测失败")
+                val f = if (format.equals("flac", true)) AudioFormat("flac", "audio/flac")
+                else formatFromUrl(playUrl)
+                val label = when {
+                    f.ext == "flac" -> "FLAC无损"
+                    bitrate.isNotEmpty() -> "${bitrate}k"
+                    else -> "128k"
+                }
+                return ResolvedUrl(playUrl, f.ext, f.mime, label)
+            } catch (e: Exception) {
+                lastErr = e.message ?: ""
+            }
+        }
+        throw RuntimeException(lastErr.ifEmpty { "官方接口不可用" })
+    }
+
+    /** 第三方兜底源：兼容 data.url / url 两种 JSON 结构 */
+    private fun resolveKuwoBackup(json: String, level: String): ResolvedUrl {
+        val root = parse(json) ?: throw RuntimeException("备用源响应非 JSON")
+        val playUrl = root.getAsJsonObject("data")?.get("url")?.takeIf { !it.isJsonNull }?.asString
+            ?: root.get("url")?.takeIf { !it.isJsonNull }?.asString
+            ?: throw RuntimeException("备用源未返回链接")
+        if (!probeUrl(playUrl)) throw RuntimeException("备用源链接探测失败")
+        val fmt = formatFromUrl(playUrl)
+        val label = if (fmt.ext == "flac") "FLAC无损"
+        else if (level == "exhigh") "320k"
+        else "128k"
         return ResolvedUrl(playUrl, fmt.ext, fmt.mime, label)
     }
 
