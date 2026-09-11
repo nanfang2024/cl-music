@@ -9,7 +9,7 @@ import com.yue.tool.player.PlaybackService
 import com.yue.tool.player.PlayerManager
 import com.yue.tool.ui.DownloadsFragment
 import com.yue.tool.ui.HomeFragment
-import com.yue.tool.player.PlayerFragment
+import com.yue.tool.ui.PlayerFragment
 import com.yue.tool.ui.SettingsFragment
 
 class MainActivity : AppCompatActivity() {

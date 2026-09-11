@@ -3125,10 +3125,6 @@ id blocking
 id bottom
 id bottomNav
 id bounce
-id btnBack
-id btnNext
-id btnPlay
-id btnPrev
 id btnSearch
 id buttonDelete
 id buttonDownload
@@ -3169,7 +3165,6 @@ id contiguous
 id coordinator
 id cos
 id counterclockwise
-id coverArt
 id cradle
 id custom
 id customPanel
@@ -3276,7 +3271,6 @@ id listDownloads
 id listMode
 id listTracks
 id list_item
-id lrcList
 id m3_side_sheet
 id marquee
 id masked
@@ -3433,7 +3427,6 @@ id search_mag_icon
 id search_plate
 id search_src_text
 id search_voice_btn
-id seekBar
 id select_dialog_listview
 id selected
 id selection_type
@@ -3531,10 +3524,6 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
-id tvArtist
-id tvCurrent
-id tvTitle
-id tvTotal
 id unchecked
 id uniform
 id unlabeled
@@ -3686,12 +3675,10 @@ layout design_text_input_start_icon
 layout dialog_download
 layout fragment_downloads
 layout fragment_home
-layout fragment_player
 layout fragment_settings
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout item_download
-layout item_lrc
 layout item_track
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
@@ -3941,7 +3928,6 @@ string path_password_strike_through
 string play_failed
 string quality
 string resolve_failed
-string resolve_failed_detail
 string search_menu_title
 string searchbar_scrolling_view_behavior
 string searchview_clear_text_content_description

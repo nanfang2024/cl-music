@@ -95,7 +95,7 @@ object KuwoDes {
         val pR = LongArray(8)
         val out = bittransform(ARRAYIP2, 64, l)
         var pSource0 = u32(out)
-        var pSource1 = u32(out ushr 32)
+        var pSource1 = u32((out and 0xFFFFFFFF00000000L) ushr 32)
         for (i in 0 until 16) {
             val r = bittransform(ARRAYE, 64, pSource1) xor longs[i]
             for (j in 0 until 8) {
@@ -110,7 +110,7 @@ object KuwoDes {
             pSource1 = newP1
         }
         val tmp = pSource0; pSource0 = pSource1; pSource1 = tmp
-        val result = (pSource1 shl 32) or (pSource0 and 0xFFFFFFFFL)
+        val result = ((pSource1 shl 32) and 0xFFFFFFFF00000000L) or (pSource0 and 0xFFFFFFFFL)
         return u64(bittransform(ARRAYIP1, 64, result))
     }
 
@@ -220,7 +220,7 @@ object KuwoDes {
         // 找 \r\n\r\n 分隔点
         var split = -1
         for (i in 0 until buf.size - 3) {
-            if (buf[i].toInt() and 0xFF == 13 && buf[i + 1].toInt() and 0xFF == 10 && buf[i + 2].toInt() and 0xFF == 13 && buf[i + 3].toInt() and 0xFF == 10) {
+            if (buf[i] == 13 && buf[i + 1] == 10 && buf[i + 2] == 13 && buf[i + 3] == 10) {
                 split = i
                 break
             }

@@ -27,10 +27,19 @@ android {
         jvmTarget = "17"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../yingyue.keystore")
+            storePassword = "yingyue2026"
+            keyAlias = "yingyue"
+            keyPassword = "yingyue2026"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            // 无签名构建，用户自行用 MT 管理器签名
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
