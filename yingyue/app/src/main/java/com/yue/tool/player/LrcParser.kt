@@ -31,7 +31,7 @@ object LrcParser {
             if (matches.isEmpty()) return@forEach
             // 提取歌词文本（去掉所有时间戳部分）
             val text = matches.fold(line) { acc, m ->
-                acc.replace(m.range.first..m.range.last, "")
+                acc.replaceRange(m.range.first, m.range.last + 1, "")
             }.trim()
             // 为每个时间戳创建一行
             for (m in matches) {

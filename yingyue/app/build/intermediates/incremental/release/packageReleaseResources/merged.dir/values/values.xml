@@ -38,6 +38,7 @@
     <string name="play_failed">播放失败</string>
     <string name="quality">音质</string>
     <string name="resolve_failed">解析播放链接失败</string>
+    <string name="resolve_failed_detail">解析失败：%1$s</string>
     <string name="settings_channel">Telegram 频道</string>
     <string name="settings_path">下载路径</string>
     <string name="settings_theme">主题</string>

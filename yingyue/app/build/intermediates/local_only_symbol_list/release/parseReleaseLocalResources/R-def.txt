@@ -32,6 +32,10 @@ drawable ic_share
 drawable ic_stop
 drawable ic_telegram
 id bottomNav
+id btnBack
+id btnNext
+id btnPlay
+id btnPrev
 id btnSearch
 id buttonDelete
 id buttonDownload
@@ -45,6 +49,7 @@ id chipQuality128
 id chipQuality320
 id chipQuality740
 id chipQuality999
+id coverArt
 id equalizer
 id fragmentContainer
 id imageCover
@@ -52,6 +57,7 @@ id inputKeyword
 id layoutEmpty
 id listDownloads
 id listTracks
+id lrcList
 id miniArtist
 id miniBtnPlay
 id miniBtnStop
@@ -68,6 +74,7 @@ id qualityGroup
 id radioDark
 id radioLight
 id radioSystem
+id seekBar
 id textArtist
 id textEmpty
 id textFormat
@@ -81,12 +88,18 @@ id textSource
 id textStatus
 id textTime
 id themeGroup
+id tvArtist
+id tvCurrent
+id tvTitle
+id tvTotal
 layout activity_main
 layout dialog_download
 layout fragment_downloads
 layout fragment_home
+layout fragment_player
 layout fragment_settings
 layout item_download
+layout item_lrc
 layout item_track
 menu bottom_nav
 mipmap ic_launcher
@@ -115,6 +128,7 @@ string open_failed
 string play_failed
 string quality
 string resolve_failed
+string resolve_failed_detail
 string settings_channel
 string settings_path
 string settings_theme
