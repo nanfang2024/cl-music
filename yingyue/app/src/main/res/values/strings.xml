@@ -9,6 +9,8 @@
     <string name="source_netease">芸朵</string>
     <string name="source_joox">绿鹅</string>
     <string name="source_kuwo">库窝</string>
+    <string name="source_kugou">酷狗</string>
+    <string name="source_migu">咪咕</string>
 
     <string name="tab_home">首页</string>
     <string name="tab_downloads">下载</string>
@@ -51,4 +53,11 @@
     <string name="delete_msg">确定删除「%1$s」的下载记录吗？</string>
     <string name="confirm">确定</string>
     <string name="deleted">已删除</string>
+
+    <!-- 前台播放服务（v1.5.0） -->
+    <string name="notif_channel">播放</string>
+    <string name="notif_channel_desc">常驻通知，控制试听播放</string>
+    <string name="notif_play">播放</string>
+    <string name="notif_pause">暂停</string>
+    <string name="notif_stop">停止</string>
 </resources>

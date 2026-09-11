@@ -2,6 +2,7 @@ package com.yue.tool
 
 import android.app.Application
 import com.yue.tool.data.ThemePrefs
+import com.yue.tool.player.PlayerManager
 
 class App : Application() {
     override fun onCreate() {
@@ -9,5 +10,7 @@ class App : Application() {
         // Major #12: 在 Application.onCreate 中提前应用主题
         // 确保 Activity 创建时主题已正确设置，避免重建时状态丢失
         ThemePrefs.apply(ThemePrefs.getMode(this))
+        // 初始化播放器（存储全局 context，用于启停前台服务）
+        PlayerManager.init(this)
     }
 }

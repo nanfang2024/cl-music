@@ -46,18 +46,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        // Activity 切后台时暂停播放
-        if (PlayerManager.getCurrentTrackId() != null) {
-            PlayerManager.pause()
-        }
-    }
+    // 熄屏/切后台不暂停播放：由 PlaybackService 前台服务保活，
+    // 通知栏提供播放暂停/停止控制（v1.5.0 修复）
 
     override fun onDestroy() {
         super.onDestroy()
         PlayerManager.unbind()
-        PlayerManager.stop()
     }
 
     /** 跳转到下载页（Snackbar「查看」用） */

@@ -126,6 +126,24 @@
             android:layout_weight="1"
             android:text="@string/source_kuwo"
             android:textSize="13sp" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipKugou"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/source_kugou"
+            android:textSize="13sp" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMigu"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/source_migu"
+            android:textSize="13sp" />
     </LinearLayout>
 
     <LinearLayout

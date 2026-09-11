@@ -5,8 +5,10 @@ color cardBg
 color chipBg
 color divider
 color jooxPill
+color kugouPill
 color kuwoPill
 color launcherBg
+color miguPill
 color moonGold
 color navInactive
 color nav_item
@@ -25,6 +27,7 @@ drawable ic_empty_moon
 drawable ic_home
 drawable ic_launcher_foreground
 drawable ic_logo_moon
+drawable ic_pause
 drawable ic_play
 drawable ic_search
 drawable ic_settings
@@ -39,7 +42,9 @@ id buttonPlay
 id buttonShare
 id cardTelegram
 id chipJoox
+id chipKugou
 id chipKuwo
+id chipMigu
 id chipNetease
 id chipQuality128
 id chipQuality320
@@ -111,6 +116,11 @@ string file_missing
 string hint_keyword
 string hint_no_source
 string hint_search
+string notif_channel
+string notif_channel_desc
+string notif_pause
+string notif_play
+string notif_stop
 string open_failed
 string play_failed
 string quality
@@ -121,7 +131,9 @@ string settings_theme
 string share_failed
 string share_to
 string source_joox
+string source_kugou
 string source_kuwo
+string source_migu
 string source_netease
 string status_empty
 string status_resolving

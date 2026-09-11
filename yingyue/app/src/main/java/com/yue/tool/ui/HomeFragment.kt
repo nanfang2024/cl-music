@@ -107,6 +107,8 @@ class HomeFragment : Fragment() {
         binding.chipNetease.isChecked = true
         binding.chipJoox.isChecked = false
         binding.chipKuwo.isChecked = false
+        binding.chipKugou.isChecked = false
+        binding.chipMigu.isChecked = false
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(
@@ -131,6 +133,8 @@ class HomeFragment : Fragment() {
         if (binding.chipNetease.isChecked) sources += "netease"
         if (binding.chipJoox.isChecked) sources += "joox"
         if (binding.chipKuwo.isChecked) sources += "kuwo"
+        if (binding.chipKugou.isChecked) sources += "kugou"
+        if (binding.chipMigu.isChecked) sources += "migu"
         return sources
     }
 
