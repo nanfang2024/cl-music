@@ -5,10 +5,8 @@
     <color name="chipBg">#EEF0F6</color>
     <color name="divider">#E8EAF0</color>
     <color name="jooxPill">#27AE60</color>
-    <color name="kugouPill">#2CA6E0</color>
     <color name="kuwoPill">#8E44AD</color>
     <color name="launcherBg">#0B0F1A</color>
-    <color name="miguPill">#E85A8B</color>
     <color name="moonGold">#B8892F</color>
     <color name="navInactive">#9AA0AC</color>
     <color name="neteasePill">#C0392B</color>
@@ -51,9 +49,7 @@
     <string name="share_failed">分享失败</string>
     <string name="share_to">分享到</string>
     <string name="source_joox">绿鹅</string>
-    <string name="source_kugou">酷狗</string>
     <string name="source_kuwo">库窝</string>
-    <string name="source_migu">咪咕</string>
     <string name="source_netease">芸朵</string>
     <string name="status_empty">无搜索结果</string>
     <string name="status_resolving">解析中</string>

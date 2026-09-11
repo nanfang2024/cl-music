@@ -5,10 +5,8 @@ color cardBg
 color chipBg
 color divider
 color jooxPill
-color kugouPill
 color kuwoPill
 color launcherBg
-color miguPill
 color moonGold
 color navInactive
 color nav_item
@@ -42,9 +40,7 @@ id buttonPlay
 id buttonShare
 id cardTelegram
 id chipJoox
-id chipKugou
 id chipKuwo
-id chipMigu
 id chipNetease
 id chipQuality128
 id chipQuality320
@@ -131,9 +127,7 @@ string settings_theme
 string share_failed
 string share_to
 string source_joox
-string source_kugou
 string source_kuwo
-string source_migu
 string source_netease
 string status_empty
 string status_resolving

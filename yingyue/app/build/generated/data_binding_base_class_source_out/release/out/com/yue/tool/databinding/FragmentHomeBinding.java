@@ -32,13 +32,7 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final Chip chipJoox;
 
   @NonNull
-  public final Chip chipKugou;
-
-  @NonNull
   public final Chip chipKuwo;
-
-  @NonNull
-  public final Chip chipMigu;
 
   @NonNull
   public final Chip chipNetease;
@@ -74,18 +68,16 @@ public final class FragmentHomeBinding implements ViewBinding {
   public final TextView textStatus;
 
   private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnSearch,
-      @NonNull Chip chipJoox, @NonNull Chip chipKugou, @NonNull Chip chipKuwo,
-      @NonNull Chip chipMigu, @NonNull Chip chipNetease, @NonNull Chip chipQuality128,
-      @NonNull Chip chipQuality320, @NonNull Chip chipQuality740, @NonNull Chip chipQuality999,
-      @NonNull EditText inputKeyword, @NonNull LinearLayout layoutEmpty,
-      @NonNull RecyclerView listTracks, @NonNull ProgressBar progressSearch,
-      @NonNull ChipGroup qualityGroup, @NonNull TextView textStatus) {
+      @NonNull Chip chipJoox, @NonNull Chip chipKuwo, @NonNull Chip chipNetease,
+      @NonNull Chip chipQuality128, @NonNull Chip chipQuality320, @NonNull Chip chipQuality740,
+      @NonNull Chip chipQuality999, @NonNull EditText inputKeyword,
+      @NonNull LinearLayout layoutEmpty, @NonNull RecyclerView listTracks,
+      @NonNull ProgressBar progressSearch, @NonNull ChipGroup qualityGroup,
+      @NonNull TextView textStatus) {
     this.rootView = rootView;
     this.btnSearch = btnSearch;
     this.chipJoox = chipJoox;
-    this.chipKugou = chipKugou;
     this.chipKuwo = chipKuwo;
-    this.chipMigu = chipMigu;
     this.chipNetease = chipNetease;
     this.chipQuality128 = chipQuality128;
     this.chipQuality320 = chipQuality320;
@@ -138,21 +130,9 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.chipKugou;
-      Chip chipKugou = ViewBindings.findChildViewById(rootView, id);
-      if (chipKugou == null) {
-        break missingId;
-      }
-
       id = R.id.chipKuwo;
       Chip chipKuwo = ViewBindings.findChildViewById(rootView, id);
       if (chipKuwo == null) {
-        break missingId;
-      }
-
-      id = R.id.chipMigu;
-      Chip chipMigu = ViewBindings.findChildViewById(rootView, id);
-      if (chipMigu == null) {
         break missingId;
       }
 
@@ -222,10 +202,9 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKugou,
-          chipKuwo, chipMigu, chipNetease, chipQuality128, chipQuality320, chipQuality740,
-          chipQuality999, inputKeyword, layoutEmpty, listTracks, progressSearch, qualityGroup,
-          textStatus);
+      return new FragmentHomeBinding((LinearLayout) rootView, btnSearch, chipJoox, chipKuwo,
+          chipNetease, chipQuality128, chipQuality320, chipQuality740, chipQuality999, inputKeyword,
+          layoutEmpty, listTracks, progressSearch, qualityGroup, textStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -107,8 +107,6 @@ class HomeFragment : Fragment() {
         binding.chipNetease.isChecked = true
         binding.chipJoox.isChecked = false
         binding.chipKuwo.isChecked = false
-        binding.chipKugou.isChecked = false
-        binding.chipMigu.isChecked = false
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(
@@ -123,6 +121,10 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         searchJob?.cancel()
+        // 避免已销毁的 Fragment/Adapter 被单例持有
+        if (PlayerManager.onStateChange != null) {
+            PlayerManager.onStateChange = null
+        }
         _binding = null
     }
 
@@ -133,8 +135,6 @@ class HomeFragment : Fragment() {
         if (binding.chipNetease.isChecked) sources += "netease"
         if (binding.chipJoox.isChecked) sources += "joox"
         if (binding.chipKuwo.isChecked) sources += "kuwo"
-        if (binding.chipKugou.isChecked) sources += "kugou"
-        if (binding.chipMigu.isChecked) sources += "migu"
         return sources
     }
 
@@ -217,6 +217,8 @@ class HomeFragment : Fragment() {
     private fun togglePlay(track: Track) {
         // 如果是当前播放的歌曲 → 切换播放/暂停
         if (PlayerManager.togglePlay(track)) return
+        // 试听音质跟随当前所选档位（智能换线以此为首选档）
+        PlayerManager.preferredQuality = selectedQuality()
         // 否则开始播放新歌
         PlayerManager.startPlay(track) {
             toast(getString(R.string.resolve_failed))

@@ -1341,7 +1341,6 @@ color foreground_material_light
 color highlighted_text_material_dark
 color highlighted_text_material_light
 color jooxPill
-color kugouPill
 color kuwoPill
 color launcherBg
 color m3_appbar_overlay_color
@@ -1943,7 +1942,6 @@ color material_timepicker_button_stroke
 color material_timepicker_clock_text_color
 color material_timepicker_clockface
 color material_timepicker_modebutton_tint
-color miguPill
 color moonGold
 color mtrl_btn_bg_color_selector
 color mtrl_btn_ripple_color
@@ -3146,9 +3144,7 @@ id chains
 id checkbox
 id checked
 id chipJoox
-id chipKugou
 id chipKuwo
-id chipMigu
 id chipNetease
 id chipQuality128
 id chipQuality320
@@ -3950,9 +3946,7 @@ string share_to
 string side_sheet_accessibility_pane_title
 string side_sheet_behavior
 string source_joox
-string source_kugou
 string source_kuwo
-string source_migu
 string source_netease
 string status_bar_notification_info_overflow
 string status_empty

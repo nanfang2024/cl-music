@@ -28,12 +28,10 @@ data class ResolvedUrl(
 )
 
 /**
- * 五音源聚合：
+ * 三源聚合（多源容错思路参考 musicdl 项目）：
  * - 芸朵（netease）：GD Studio 音乐台 API
  * - 绿鹅（joox）：apicx.asia JOOX 接口（参考 musicsquare 项目）
  * - 库窝（kuwo）：oiapi.net 酷我接口（参考 musicsquare 项目）
- * - 酷狗（kugou）：官方搜索 + baka.plus 解析（参考 musicdl 项目）
- * - 咪咕（migu）：官方 H5 接口 + 响应解密（参考 musicdl 项目）
  */
 object MusicApi {
 
@@ -41,21 +39,6 @@ object MusicApi {
     private const val JOOX_API = "https://apicx.asia/api/joox_music"
     private const val JOOX_TOKEN = "f84ao9lMF_q7husBWRfgUw"
     private const val KUWO_API = "https://oiapi.net/api/Kuwo"
-    private const val KUGOU_SEARCH = "http://mobilecdn.kugou.com/api/v3/search/song"
-    private const val KUGOU_BAKA = "https://api.baka.plus/meting/"
-    private const val MIGU_SEARCH = "https://c.musicapp.migu.cn/v1.0/content/search_all.do"
-    private const val MIGU_LISTEN = "https://c.musicapp.migu.cn/strategy/listen-url/h5/v2.4"
-    private val MIGU_KEY = "Jk8qzuePiJ1qE3mDYhLQ3T73DtDoAhLP".toByteArray(Charsets.US_ASCII)
-
-    /** 咪咕请求公共头（H5 渠道） */
-    private val MIGU_HEADERS = mapOf(
-        "User-Agent" to "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36",
-        "Origin" to "https://h5.nf.migu.cn",
-        "Referer" to "https://h5.nf.migu.cn/",
-        "ua" to "Android_migu",
-        "version" to "6.8.8",
-        "channel" to "014021I"
-    )
 
     val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -81,27 +64,6 @@ object MusicApi {
         }
     }
 
-    /** 取原始字节（咪咕加密响应用） */
-    private fun getBytes(url: String, headers: Map<String, String>): ByteArray {
-        val builder = Request.Builder().url(url)
-        headers.forEach { (k, v) -> builder.header(k, v) }
-        client.newCall(builder.build()).execute().use { resp ->
-            if (!resp.isSuccessful) throw RuntimeException("HTTP ${resp.code}")
-            return resp.body?.bytes() ?: ByteArray(0)
-        }
-    }
-
-    /** 不跟随重定向，返回 Location（酷狗 baka 解析用） */
-    private fun getRedirect(url: String): String {
-        val noRedirect = client.newBuilder().followRedirects(false).build()
-        noRedirect.newCall(Request.Builder().url(url).header("User-Agent", "Mozilla/5.0").build())
-            .execute().use { resp ->
-                val loc = resp.header("Location")
-                    ?: resp.request.url.toString().takeIf { resp.isSuccessful }
-                return loc ?: throw RuntimeException("无重定向目标（HTTP ${resp.code}）")
-            }
-    }
-
     private fun parse(s: String): JsonObject? = try {
         JsonParser.parseString(s).asJsonObject
     } catch (e: Exception) {
@@ -124,8 +86,6 @@ object MusicApi {
                     "netease" -> raw += searchNetease(keyword, page)
                     "joox" -> raw += searchJoox(keyword, page)
                     "kuwo" -> raw += searchKuwo(keyword, page)
-                    "kugou" -> raw += searchKugou(keyword, page)
-                    "migu" -> raw += searchMigu(keyword, page)
                 }
             } catch (_: Exception) {
                 // 单个音源失败不影响其它音源
@@ -237,84 +197,6 @@ object MusicApi {
         return out
     }
 
-    /** 酷狗（kugou）：官方移动端搜索接口，封面在 trans_param.union_cover */
-    private fun searchKugou(keyword: String, page: Int): List<Track> {
-        val url = "$KUGOU_SEARCH?format=json&keyword=${enc(keyword)}&page=$page&pagesize=30"
-        val root = parse(get(url, mapOf("User-Agent" to "Mozilla/5.0"))) ?: return emptyList()
-        val data = root.getAsJsonObject("data") ?: return emptyList()
-        val info = data.getAsJsonArray("info") ?: return emptyList()
-        val out = mutableListOf<Track>()
-        info.forEach { el ->
-            try {
-                val o = el.asJsonObject
-                val hash = o["hash"]?.takeIf { !it.isJsonNull }?.asString ?: return@forEach
-                // 封面模板：http://imge.kugou.com/stdmusic/{size}/xxx.jpg
-                val coverTpl = o.getAsJsonObject("trans_param")
-                    ?.get("union_cover")?.takeIf { !it.isJsonNull }?.asString
-                val cover = coverTpl?.replace("{size}", "400")
-                out += Track(
-                    id = hash,
-                    source = "kugou",
-                    name = o["songname"]?.takeIf { !it.isJsonNull }?.asString
-                        ?: o["filename"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    artist = o["singername"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    album = o["album_name"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    coverUrl = cover,
-                    keyword = keyword,
-                    index = out.size + 1,
-                    searchPage = page
-                )
-            } catch (_: Exception) {
-            }
-        }
-        return out
-    }
-
-    /** 咪咕（migu）：官方 H5 搜索接口，id 存 "contentId|copyrightId" */
-    private fun searchMigu(keyword: String, page: Int): List<Track> {
-        val searchSwitch = """{"song":1,"album":0,"singer":0,"tagSong":1,"mvSong":0,"bestShow":1}"""
-        val url = "$MIGU_SEARCH?text=${enc(keyword)}&pageNo=$page&pageSize=30" +
-                "&isCopyright=1&sort=1&searchSwitch=${enc(searchSwitch)}"
-        val root = parse(get(url, MIGU_HEADERS)) ?: return emptyList()
-        if (root.get("code")?.takeIf { !it.isJsonNull }?.asString != "000000") return emptyList()
-        val results = root.getAsJsonObject("songResultData")
-            ?.getAsJsonArray("result") ?: return emptyList()
-        val out = mutableListOf<Track>()
-        results.forEach { el ->
-            try {
-                val o = el.asJsonObject
-                val contentId = o["contentId"]?.takeIf { !it.isJsonNull }?.asString ?: return@forEach
-                val copyrightId = o["copyrightId"]?.takeIf { !it.isJsonNull }?.asString ?: ""
-                // 封面：取 imgItems 最大的一个
-                var cover: String? = null
-                runCatching {
-                    cover = o.getAsJsonArray("imgItems")
-                        ?.lastOrNull { !it.isJsonNull }
-                        ?.asJsonObject?.get("img")?.asString
-                }
-                val singers = o.getAsJsonArray("singers")
-                    ?.joinToString(" / ") { s -> s.asJsonObject["name"]?.asString ?: "" }
-                    ?.takeIf { it.isNotEmpty() } ?: ""
-                val albums = o.getAsJsonArray("albums")
-                    ?.firstOrNull { !it.isJsonNull }
-                    ?.asJsonObject?.get("name")?.takeIf { !it.isJsonNull }?.asString ?: ""
-                out += Track(
-                    id = "$contentId|$copyrightId",
-                    source = "migu",
-                    name = o["name"]?.takeIf { !it.isJsonNull }?.asString ?: "",
-                    artist = singers,
-                    album = albums,
-                    coverUrl = cover,
-                    keyword = keyword,
-                    index = out.size + 1,
-                    searchPage = page
-                )
-            } catch (_: Exception) {
-            }
-        }
-        return out
-    }
-
     // ==================== 解析播放链接 ====================
 
     /**
@@ -363,8 +245,6 @@ object MusicApi {
         return when (track.source) {
             "joox" -> resolveJoox(track, quality)
             "kuwo" -> resolveKuwo(track, quality)
-            "kugou" -> resolveKugou(track, quality)
-            "migu" -> resolveMigu(track, quality)
             else -> resolveNetease(track, quality)
         }
     }
@@ -455,119 +335,6 @@ object MusicApi {
     }
 
     // ==================== 工具 ====================
-
-    /** 酷狗：三级解析链 baka(分档) → cocodownloader(无损) → lzmhhh(无损) */
-    private fun resolveKugou(track: Track, quality: String): ResolvedUrl {
-        val ua = mapOf("User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-
-        // 链1：baka meting，支持音质分档（br=128/320/2000），302 到官方 CDN
-        try {
-            val br = when (quality) {
-                "128k" -> "128"
-                "320k" -> "320"
-                else -> "2000"   // 740k/999k 均取无损
-            }
-            val playUrl = getRedirect("$KUGOU_BAKA?server=kugou&type=url&id=${enc(track.id)}&br=$br")
-            if (playUrl.startsWith("http")) {
-                val fmt = formatFromUrl(playUrl)
-                val label = when {
-                    fmt.ext == "flac" -> "FLAC无损"
-                    else -> quality
-                }
-                return ResolvedUrl(playUrl, fmt.ext, fmt.mime, label)
-            }
-        } catch (_: Exception) {
-        }
-
-        // 链2：cocodownloader，仅返回无损
-        try {
-            val root = parse(
-                get("https://cocodownloader.markqq.com/api/url?id=${enc(track.id)}&provider=kugou", ua)
-            )
-            val u = root?.get("url")?.takeIf { !it.isJsonNull }?.asString
-            if (!u.isNullOrEmpty() && u.startsWith("http")) {
-                val fmt = formatFromUrl(u)
-                return ResolvedUrl(u, fmt.ext, fmt.mime, "FLAC无损")
-            }
-        } catch (_: Exception) {
-        }
-
-        // 链3：lzmhhh，仅返回无损
-        try {
-            val body = okhttp3.FormBody.Builder()
-                .add("id", track.id)
-                .add("type", "kg")
-                .build()
-            val req = Request.Builder()
-                .url("https://music.lzmhhh.com/api/music/url")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-                .header("Referer", "https://music.lzmhhh.com/")
-                .header("Origin", "https://music.lzmhhh.com")
-                .post(body)
-                .build()
-            client.newCall(req).execute().use { resp ->
-                val text = resp.body?.string() ?: ""
-                val u = parse(text)?.get("data")?.takeIf { !it.isJsonNull }?.asString
-                if (!u.isNullOrEmpty() && u.startsWith("http")) {
-                    val fmt = formatFromUrl(u)
-                    return ResolvedUrl(u, fmt.ext, fmt.mime, "FLAC无损")
-                }
-            }
-        } catch (_: Exception) {
-        }
-
-        throw RuntimeException("酷狗音源解析失败：所有链路均不可用")
-    }
-
-    /** 咪咕：官方 listen-url 接口（响应加密），toneFlag=PQ/HQ/SQ */
-    private fun resolveMigu(track: Track, quality: String): ResolvedUrl {
-        val parts = track.id.split("|")
-        val contentId = parts.getOrNull(0) ?: throw RuntimeException("咪咕音源参数缺失")
-        val copyrightId = parts.getOrNull(1) ?: ""
-        val toneFlag = when (quality) {
-            "128k" -> "PQ"
-            "320k" -> "HQ"
-            else -> "SQ"      // 740k/999k 均取无损
-        }
-        val url = "$MIGU_LISTEN?contentId=$contentId&copyrightId=$copyrightId" +
-                "&resourceType=2&netType=01&toneFlag=$toneFlag&scene=&lowerQualityContentId=$contentId"
-        val headers = MIGU_HEADERS + mapOf(
-            "birth" to "h5page",
-            "signature" to "1"
-        )
-        val raw = getBytes(url, headers)
-        val text = decryptMigu(raw)
-        val root = parse(text)
-            ?: throw RuntimeException("咪咕音源解析失败：无法解密响应")
-        if (root.get("code")?.takeIf { !it.isJsonNull }?.asString != "000000") {
-            throw RuntimeException("咪咕音源未返回链接（可能无版权）")
-        }
-        val playUrl = root.getAsJsonObject("data")?.get("url")
-            ?.takeIf { !it.isJsonNull }?.asString
-            ?: throw RuntimeException("咪咕音源未返回链接（可能无版权）")
-        val fmt = formatFromUrl(playUrl)
-        val label = if (fmt.ext == "flac") "FLAC无损" else quality
-        return ResolvedUrl(playUrl, fmt.ext, fmt.mime, label)
-    }
-
-    /**
-     * 咪咕响应解密（参考 musicdl）：
-     * 密文 = AB CD 01 + seed + payload，明文字节 = (payload[i] + seed - KEY[i%len]) & 0xFF
-     */
-    private fun decryptMigu(raw: ByteArray): String {
-        if (raw.size < 4) return ""
-        if (!(raw[0] == 0xAB.toByte() && raw[1] == 0xCD.toByte() && raw[2] == 0x01.toByte())) {
-            // 未加密，直接按 UTF-8 文本返回
-            return String(raw, Charsets.UTF_8)
-        }
-        val seed = raw[3].toInt() and 0xFF
-        val out = ByteArray(raw.size - 4)
-        for (i in out.indices) {
-            val k = MIGU_KEY[i % MIGU_KEY.size].toInt() and 0xFF
-            out[i] = ((raw[i + 4].toInt() and 0xFF) + seed - k and 0xFF).toByte()
-        }
-        return String(out, Charsets.UTF_8)
-    }
 
     data class AudioFormat(val ext: String, val mime: String)
 

@@ -2,6 +2,7 @@ package com.yue.tool.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.LruCache
 import android.widget.ImageView
 import com.yue.tool.R
 import com.yue.tool.api.MusicApi
@@ -13,12 +14,17 @@ import okhttp3.Request
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 轻量级图片加载器：OkHttp 异步下载 + 内存缓存 + 圆角
+ * 轻量级图片加载器：OkHttp 异步下载 + LRU 内存缓存 + 圆角
  * 不引入 Glide/Fresco 等第三方库
  */
 object ImageLoader {
 
-    private val cache = ConcurrentHashMap<String, Bitmap>()
+    /** LRU 缓存按字节计费，上限约为最大堆的 1/8（至少 4MB） */
+    private val cache = object : LruCache<String, Bitmap>(
+        ((Runtime.getRuntime().maxMemory() / 1024) / 8).toInt().coerceAtLeast(4 * 1024)
+    ) {
+        override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount / 1024
+    }
     private val loading = ConcurrentHashMap<String, Boolean>()
 
     fun load(view: ImageView, url: String?) {
@@ -27,7 +33,7 @@ object ImageLoader {
             return
         }
         // 命中内存缓存
-        cache[url]?.let { bmp ->
+        cache.get(url)?.let { bmp ->
             view.setImageBitmap(bmp)
             return
         }
@@ -41,7 +47,7 @@ object ImageLoader {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val bmp = downloadBitmap(url)
-                cache[url] = bmp
+                cache.put(url, bmp)
                 withContext(Dispatchers.Main) {
                     // 检查 view 是否还被绑定到同一个 URL
                     if (view.tag == tag) {

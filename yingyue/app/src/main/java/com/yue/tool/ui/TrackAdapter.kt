@@ -65,8 +65,6 @@ class TrackAdapter(
                 when (track.source) {
                     "joox" -> R.string.source_joox
                     "kuwo" -> R.string.source_kuwo
-                    "kugou" -> R.string.source_kugou
-                    "migu" -> R.string.source_migu
                     else -> R.string.source_netease
                 }
             )
@@ -76,8 +74,6 @@ class TrackAdapter(
                 when (track.source) {
                     "joox" -> R.color.jooxPill
                     "kuwo" -> R.color.kuwoPill
-                    "kugou" -> R.color.kugouPill
-                    "migu" -> R.color.miguPill
                     else -> R.color.neteasePill
                 }
             )
