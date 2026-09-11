@@ -214,12 +214,9 @@ class HomeFragment : Fragment() {
         // 如果是当前播放的歌曲 → 切换播放/暂停
         if (PlayerManager.togglePlay(track)) return
         // 否则开始播放新歌
-        PlayerManager.startPlay(track) { errMsg ->
-            // v1.5.0：透传具体错误信息（审计 P0-2）
-            toast(getString(R.string.resolve_failed_detail, errMsg))
+        PlayerManager.startPlay(track) {
+            toast(getString(R.string.resolve_failed))
         }
-        // 启动前台播放服务，保证后台播放
-        com.yue.tool.player.PlaybackService.start(requireContext())
     }
 
     // ==================== 下载 ====================

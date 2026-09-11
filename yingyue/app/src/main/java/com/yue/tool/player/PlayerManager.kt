@@ -16,21 +16,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * v1.5.0 全局播放器管理器：单例，跨 Fragment 生命周期存活
- *
- * 审计修复要点：
- * 1. [P0-2] 单一错误回调：onResolveFail 带错误信息参数，不再有成员变量双重通道
- * 2. [P1-1] isResolving 在 stopInternal() 中重置
- * 3. [P1-2] resolveKuwo 兜底链错误信息完整透传（已在 MusicApi 中实现）
- * 4. 解析失败时保留 currentTrack，UI 显示错误状态而非直接隐藏
- * 5. MediaPlayer 错误回调带具体 what/extra 码
+ * 全局播放器管理器：单例，跨 Fragment 生命周期存活
+ * 持有 MediaPlayer + 当前曲目 + UI 绑定
  */
 object PlayerManager {
 
     private var player: MediaPlayer? = null
     private var currentTrack: Track? = null
     private var isPlaying = false
-    private var isResolving = false
     private var resolveJob: Job? = null
 
     // UI 绑定（由 MainActivity 设置）
@@ -61,10 +54,6 @@ object PlayerManager {
 
     // 外部回调：播放状态变化时通知（如 TrackAdapter 更新图标）
     var onStateChange: ((trackId: String?, isPlaying: Boolean) -> Unit)? = null
-    // 外部回调：歌词加载完成（PlayerFragment 使用）
-    var onLyricLoaded: ((track: Track, lrcText: String) -> Unit)? = null
-    // 外部回调：进度变化（PlayerFragment 使用）
-    var onProgressUpdate: ((currentMs: Int, totalMs: Int) -> Unit)? = null
 
     fun bind(
         bar: View,
@@ -100,20 +89,15 @@ object PlayerManager {
     }
 
     fun getCurrentTrackId(): String? = currentTrack?.id
-    fun getCurrentTrack(): Track? = currentTrack
-    fun isPlaying(): Boolean = isPlaying
-    fun isResolving(): Boolean = isResolving
 
     /**
      * 开始播放一首歌：解析链接 → MediaPlayer → 播放
-     * @param onResolveFail 错误回调，带具体错误信息（单一回调通道，审计 P0-2）
      */
-    fun startPlay(track: Track, onResolveFail: (String) -> Unit) {
+    fun startPlay(track: Track, onResolveFail: () -> Unit) {
         // 先停止当前
         stopInternal()
 
         currentTrack = track
-        isResolving = true
         // 显示加载中状态
         miniBar?.visibility = View.VISIBLE
         miniName?.text = "解析中…"
@@ -127,27 +111,19 @@ object PlayerManager {
             val resolved = withContext(Dispatchers.IO) {
                 runCatching {
                     com.yue.tool.api.MusicApi.resolveUrl(track, "128k")
-                }
+                }.getOrNull()
             }
-            isResolving = false
-            val result = resolved.getOrNull()
-            if (result == null) {
-                // 透传具体错误信息（审计 P1-2）
-                val errMsg = resolved.exceptionOrNull()?.message ?: "未知错误"
-                onResolveFail(errMsg)
+            if (resolved == null) {
+                onResolveFail()
                 stopInternal()
                 return@launch
             }
             try {
                 val mp = MediaPlayer()
                 player = mp
-                mp.setDataSource(result.url)
-                mp.setOnCompletionListener {
-                    stopInternal()
-                }
-                mp.setOnErrorListener { _, what, extra ->
-                    // 带具体错误码（审计 P0-2）
-                    onResolveFail("播放错误：what=$what extra=$extra")
+                mp.setDataSource(resolved.url)
+                mp.setOnCompletionListener { stopInternal() }
+                mp.setOnErrorListener { _, _, _ ->
                     stopInternal()
                     true
                 }
@@ -156,25 +132,11 @@ object PlayerManager {
                     isPlaying = true
                     updateUI()
                     onStateChange?.invoke(currentTrack?.id, true)
-                    // 异步加载歌词
-                    loadLyric(track)
                 }
                 mp.prepareAsync()
-            } catch (e: Exception) {
-                onResolveFail(e.message ?: e.javaClass.simpleName)
+            } catch (_: Exception) {
                 stopInternal()
-            }
-        }
-    }
-
-    /** 异步加载歌词 */
-    private fun loadLyric(track: Track) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val lrc = runCatching {
-                com.yue.tool.api.MusicApi.fetchLyric(track)
-            }.getOrNull() ?: ""
-            withContext(Dispatchers.Main) {
-                onLyricLoaded?.invoke(track, lrc)
+                onResolveFail()
             }
         }
     }
@@ -222,8 +184,6 @@ object PlayerManager {
     private fun stopInternal() {
         resolveJob?.cancel()
         resolveJob = null
-        // 审计 P1-1：重置 isResolving
-        isResolving = false
         player?.let { mp ->
             try {
                 if (mp.isPlaying) mp.stop()

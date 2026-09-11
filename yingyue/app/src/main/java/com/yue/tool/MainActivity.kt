@@ -5,11 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.yue.tool.data.ThemePrefs
 import com.yue.tool.databinding.ActivityMainBinding
-import com.yue.tool.player.PlaybackService
 import com.yue.tool.player.PlayerManager
 import com.yue.tool.ui.DownloadsFragment
 import com.yue.tool.ui.HomeFragment
-import com.yue.tool.ui.PlayerFragment
 import com.yue.tool.ui.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -33,17 +31,6 @@ class MainActivity : AppCompatActivity() {
         // 停止按钮
         binding.miniBtnStop.setOnClickListener {
             PlayerManager.stop()
-            PlaybackService.stop(this)
-        }
-
-        // 点击迷你播放器 → 打开全屏播放页
-        binding.miniPlayer.setOnClickListener {
-            if (PlayerManager.getCurrentTrackId() != null) {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainer, PlayerFragment(), "player")
-                    .addToBackStack(null)
-                    .commit()
-            }
         }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
@@ -59,19 +46,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // v1.5.0：后台不暂停播放，由前台服务保持
-    // override fun onPause() {
-    //     super.onPause()
-    //     if (PlayerManager.getCurrentTrackId() != null) {
-    //         PlayerManager.pause()
-    //     }
-    // }
+    override fun onPause() {
+        super.onPause()
+        // Activity 切后台时暂停播放
+        if (PlayerManager.getCurrentTrackId() != null) {
+            PlayerManager.pause()
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         PlayerManager.unbind()
         PlayerManager.stop()
-        PlaybackService.stop(this)
     }
 
     /** 跳转到下载页（Snackbar「查看」用） */
